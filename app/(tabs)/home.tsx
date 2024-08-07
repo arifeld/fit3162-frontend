@@ -1,31 +1,63 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, ScrollView, Text, View, FlatList } from 'react-native';
 
-import EditScreenInfo from '@/components/EditScreenInfo';
-import { Text, View } from '@/components/Themed';
+import Card from '../components/RestaurantCard'
+
+const RESTAURANTS = [{
+  name: 'Guzman Y Gomez',
+  description: 'Specialises in Mexican cuisine with burritos, nachos, tacos, quesadillas and other Mexican-inspired items available.',
+  rating: 4.5,
+  image: require('../assets/images/guzman.png'),
+  id: 1
+},
+{
+  name: 'Sushi Sushi',
+  description: 'At Sushi Sushi we see the creation of fresh, healthy sushi as way more than a job; it is an obsession.',
+  rating: 4.7,
+  image: require('../assets/images/sushi-sushi.jpg'),
+  id: 2
+},
+{
+  name: 'Boost',
+  description: 'Boost offers a range of healthy smoothies and freshly squeezed juices made to order, with a variety of dairy-free and gluten-free options.',
+  rating: 5.0,
+  image: require('../assets/images/boost-juice.png'),
+  id: 3
+}
+]
 
 export default function Home() {
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Home</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/(tabs)/home.tsx" />
+    <View style={styles.outerContainer}>
+      <View style={styles.container}>
+        <ScrollView style={styles.scrollView}>
+          <FlatList 
+            data={RESTAURANTS}
+            keyExtractor={(restaurant) => restaurant.id.toString()}
+            renderItem={({item}) => {
+              return <Card info={item}/>
+            }}/>
+        </ScrollView>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  /* Adding this outer container as react native doesn't allow us 
+  to set default background colour from grey to white. */
+  outerContainer: {
+    flex: 1,
+    backgroundColor: 'white'
+  },
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    marginVertical: 10,
   },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
+  scrollView: {
+    marginHorizontal: 10,
   },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-  },
+  text: {
+    fontSize: 42,
+  }
 });
