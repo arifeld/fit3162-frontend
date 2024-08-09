@@ -40,6 +40,27 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
         }}
       />
+            <Tabs.Screen
+        name="favourites"
+        options={{
+          title: 'Favourites',
+          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="nearMe"
+        options={{
+          title: 'Near Me',
+          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="setting"
+        options={{
+          title: 'setting',
+          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+        }}
+      />
     </Tabs>
   );
 }
