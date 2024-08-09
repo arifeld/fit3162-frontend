@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, FlatList } from 'react-native';
+import { View, Text, Image, StyleSheet, FlatList, Button } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -103,7 +103,6 @@ const getBarWidthPercentage = (count: number, total: number): number => {
     return (count / total) * 100;
 };
 
-// Main component to display detailed information about a restaurant
 export default function RestaurantDetailScreen() {
     const { id } = useLocalSearchParams(); // Get the restaurant ID from the URL parameters
     const restaurant = RESTAURANTS.find((item) => item.id.toString() === id); // Find the restaurant by ID
@@ -135,8 +134,12 @@ export default function RestaurantDetailScreen() {
         </View>
     );
 
-    return (
-        <View style={styles.container}>
+    // Function to calculate the width of the rating bar
+    const getBarWidthPercentage = (count: number, total: number) => (count / total) * 100;
+
+    // Header component for the FlatList
+    const renderHeader = () => (
+        <View>
             {/* Display the restaurant's image */}
             <Image style={styles.image} source={restaurant.image} />
             {/* Display the restaurant's name */}
@@ -166,6 +169,7 @@ export default function RestaurantDetailScreen() {
                             </View>
                         ))}
                     </View>
+
                     {/* Column for displaying the overall rating, total reviews, and recommendation percentage */}
                     <View>
                         <Text style={styles.overallRating}>{restaurant.rating.toFixed(1)}</Text>
@@ -173,16 +177,23 @@ export default function RestaurantDetailScreen() {
                         <Text>{restaurant.recommendationPercentage}% Recommended</Text>
                     </View>
                 </View>
+
             </View>
 
-            {/* List of individual reviews using FlatList */}
-            <FlatList
-                data={restaurant.reviews} // Data source for the list
-                renderItem={renderReview} // Function to render each review
-                keyExtractor={(item, index) => index.toString()} // Unique key for each item
-                contentContainerStyle={styles.reviewsList} // Additional styles for the list
-            />
+            {/* Add a button to write a review */}
+            <Button title="Write a Review" onPress={() => console.log('Write a review')} />
+
         </View>
+    );
+
+    return (
+        <FlatList
+            data={restaurant.reviews} // Data source for the list
+            renderItem={renderReview} // Function to render each review
+            keyExtractor={(item, index) => index.toString()} // Unique key for each item
+            ListHeaderComponent={renderHeader} // Header component for the FlatList
+            contentContainerStyle={styles.container} // Additional styles for the list
+        />
     );
 }
 
@@ -241,12 +252,12 @@ const styles = StyleSheet.create({
         borderRadius: 5, // Rounded corners for the rating bar
         marginLeft: 10, // Space between the star rating value and the bar
         overflow: 'hidden', // Ensure the filled bar is clipped within the container
-      },
-      ratingBar: {
+    },
+    ratingBar: {
         height: '100%', // Ensures the bar fills the height of the container
         backgroundColor: '#FFD43B', // Yellow color for the filled part of the bar
         borderRadius: 5, // Rounded corners for the filled part
-      },
+    },
     overallRating: {
         fontSize: 32, // Large font size for the overall rating
         fontWeight: 'bold', // Make the overall rating bold
