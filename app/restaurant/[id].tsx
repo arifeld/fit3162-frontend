@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, FlatList, Button } from 'react-native';
+import { View, Text, Image, StyleSheet, FlatList, Button, ScrollView } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -117,7 +117,7 @@ export default function RestaurantDetailScreen() {
     }
 
     // Function to render each individual review in the FlatList
-    const renderReview = ({ item }) => (
+    const renderReview = ({ item }: any) => (
         <View style={styles.reviewContainer}>
             <Text style={styles.userName}>{item.user}</Text>
             <View style={styles.starContainer}>
@@ -187,6 +187,7 @@ export default function RestaurantDetailScreen() {
     );
 
     return (
+        <ScrollView>
         <FlatList
             data={restaurant.reviews} // Data source for the list
             renderItem={renderReview} // Function to render each review
@@ -194,6 +195,7 @@ export default function RestaurantDetailScreen() {
             ListHeaderComponent={renderHeader} // Header component for the FlatList
             contentContainerStyle={styles.container} // Additional styles for the list
         />
+        </ScrollView>
     );
 }
 
