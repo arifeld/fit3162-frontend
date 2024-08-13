@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, FlatList, Button } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
+import { View, Text, Image, StyleSheet, FlatList, Button, TouchableOpacity } from 'react-native';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 // Sample data for restaurants
@@ -97,11 +97,6 @@ const RESTAURANTS = [
     },
 ];
 
-// Function to calculate the width of the rating bar based on the percentage of total reviews
-const getBarWidthPercentage = (count: number, total: number): number => {
-    if (total === 0) return 0;
-    return (count / total) * 100;
-};
 
 export default function RestaurantDetailScreen() {
     const { id } = useLocalSearchParams(); // Get the restaurant ID from the URL parameters
@@ -137,8 +132,11 @@ export default function RestaurantDetailScreen() {
     // Function to calculate the width of the rating bar
     const getBarWidthPercentage = (count: number, total: number) => (count / total) * 100;
 
+    const router = useRouter();  // This should be inside the component
+
     // Header component for the FlatList
     const renderHeader = () => (
+
         <View>
             {/* Display the restaurant's image */}
             <Image style={styles.image} source={restaurant.image} />
@@ -181,7 +179,13 @@ export default function RestaurantDetailScreen() {
             </View>
 
             {/* Add a button to write a review */}
-            <Button title="Write a Review" onPress={() => console.log('Write a review')} />
+            <TouchableOpacity
+                style={styles.submitButton}
+                onPress={() => router.push("../review/review")}
+            >
+                <Text style={styles.submitButtonText}>Write a Review</Text>
+            </TouchableOpacity>
+
 
         </View>
     );
@@ -299,5 +303,19 @@ const styles = StyleSheet.create({
     recommended: {
         fontSize: 12, // Font size of the recommendation text
         color: 'green', // Green color for the recommendation text
+    },
+    submitButton: {
+        backgroundColor: '#FFFFFF',
+        paddingVertical: 15,
+        borderRadius: 5,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderColor: '#000000',
+        borderWidth: 1,
+    },
+    submitButtonText: {
+        color: '#000000',
+        fontSize: 18,
+        fontWeight: 'bold',
     },
 });
