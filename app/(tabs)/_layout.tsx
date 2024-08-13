@@ -40,7 +40,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <TabBarIcon name="search" color={color} />,
         }}
       />
-            <Tabs.Screen
+        <Tabs.Screen
         name="favourites"
         options={{
           title: 'Favourites',
