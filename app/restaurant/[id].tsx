@@ -117,7 +117,7 @@ export default function RestaurantDetailScreen() {
     }
 
     // Function to render each individual review in the FlatList
-    const renderReview = ({ item }: any) => (
+    const renderReview = ({ item }) => (
         <View style={styles.reviewContainer}>
             <Text style={styles.userName}>{item.user}</Text>
             <View style={styles.starContainer}>
@@ -187,7 +187,6 @@ export default function RestaurantDetailScreen() {
     );
 
     return (
-        <View>
         <FlatList
             data={restaurant.reviews} // Data source for the list
             renderItem={renderReview} // Function to render each review
@@ -195,7 +194,6 @@ export default function RestaurantDetailScreen() {
             ListHeaderComponent={renderHeader} // Header component for the FlatList
             contentContainerStyle={styles.container} // Additional styles for the list
         />
-        </View>
     );
 }
 
