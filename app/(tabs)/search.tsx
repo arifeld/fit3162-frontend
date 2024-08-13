@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, TextInput, View, Text, Image } from 'react-native';
+import { StyleSheet, TextInput, View, Text, Image, TouchableWithoutFeedback, Keyboard } from 'react-native';
 
 export default function Search() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -11,6 +11,8 @@ export default function Search() {
   };
 
   return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+
     <View style={styles.container}>
       {/* Search Bar */}
       <TextInput
@@ -29,6 +31,8 @@ export default function Search() {
         <Text style={styles.noResultsText}>No results found</Text>
       </View>
     </View>
+    </TouchableWithoutFeedback>
+
   );
 }
 
