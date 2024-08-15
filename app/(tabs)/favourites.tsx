@@ -1,16 +1,15 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import { View, FlatList, StyleSheet } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import Card from '../components/RestaurantCard';
 import { getFavourites } from '../utils/tempDatabase';
 
-
 export default function Favourites() {
   const [favouriteRestaurants, setFavouriteRestaurants] = useState<{ name: string; description: string; rating: number; image: any; id: number; }[]>([]);
 
   useFocusEffect(
-    useCallback(() => {
-      const userId = 'current_user_id_placeholder'; // Replace with the actual user ID when available
+    React.useCallback(() => {
+      const userId = "1"; // Replace with the actual user ID when available
       const favourites = getFavourites(userId); // Get the latest favorites
       setFavouriteRestaurants(favourites); // Update the state with the fetched data
     }, []) // Empty dependency array ensures this runs when the screen is focused
@@ -27,7 +26,6 @@ export default function Favourites() {
     </View>
   );
 }
-
 
 const styles = StyleSheet.create({
   outerContainer: {

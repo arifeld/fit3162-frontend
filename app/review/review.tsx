@@ -1,14 +1,19 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, Switch, StyleSheet, TouchableWithoutFeedback, Keyboard, Button, ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Image, Switch, StyleSheet, TouchableWithoutFeedback, Keyboard, ScrollView, Alert } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
+import { addReview } from '../utils/tempDatabase'; // Import the addReview function
+import { useLocalSearchParams } from 'expo-router';
 
 export default function WriteReviewScreen() {
+  const { restaurantId } = useLocalSearchParams(); // Get the restaurant ID from the URL parameters
   const [rating, setRating] = useState(0);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [anonymous, setAnonymous] = useState(false);
   const [recommend, setRecommend] = useState(false);
   const [images, setImages] = useState<Array<string>>([]);
+
+  const userId = 1; // Replace with dynamic user ID
 
   const handleRating = (value: number) => {
     setRating(value);
@@ -20,8 +25,14 @@ export default function WriteReviewScreen() {
   };
 
   const handleSubmit = () => {
-    // Logic to handle form submission
-    console.log("Submit Review", { rating, title, description, anonymous, recommend, images });
+    if (rating === 0 || !description.trim()) {
+      Alert.alert('Error', 'Please provide a rating and a description.');
+      return;
+    }
+
+    addReview(Number(restaurantId), userId, rating, description, recommend); // Add the review to the database
+    Alert.alert('Success', 'Your review has been submitted!');
+    // Optionally reset the form or navigate away
   };
 
   return (
@@ -40,14 +51,6 @@ export default function WriteReviewScreen() {
               </TouchableOpacity>
             ))}
           </View>
-
-          <Text style={styles.label}>Title:</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Title"
-            value={title}
-            onChangeText={setTitle}
-          />
 
           <Text style={styles.label}>Description:</Text>
           <TextInput
@@ -84,7 +87,6 @@ export default function WriteReviewScreen() {
           </TouchableOpacity>
         </View>
         </ScrollView>
-
       </View>
     </TouchableWithoutFeedback>
   );

@@ -7,37 +7,37 @@ const tempDatabase = {
             user_id: 1,
             user_email: 'kristin@example.com',
             user_password: 'password123',
-            user_username: 'KristinWatson',
+            user_username: 'Kristin Watson',
         },
         {
             user_id: 2,
             user_email: 'john@example.com',
             user_password: 'password123',
-            user_username: 'JohnDoe',
+            user_username: 'John Doe',
         },
         {
             user_id: 3,
             user_email: 'alice@example.com',
             user_password: 'password123',
-            user_username: 'AliceJohnson',
+            user_username: 'Alice Johnson',
         },
         {
             user_id: 4,
             user_email: 'bob@example.com',
             user_password: 'password123',
-            user_username: 'BobBrown',
+            user_username: 'Bob Brown',
         },
         {
             user_id: 5,
             user_email: 'cathy@example.com',
             user_password: 'password123',
-            user_username: 'CathyWhite',
+            user_username: 'Cathy White',
         },
         {
             user_id: 6,
             user_email: 'dan@example.com',
             user_password: 'password123',
-            user_username: 'DanGreen',
+            user_username: 'Dan Green',
         },
     ],
     restaurants: [
@@ -137,7 +137,7 @@ export const addToFavourites = (userId: string, storeId: number) => {
         userId,
         storeId,
     });
-    console.log('Updated Database:', tempDatabase);
+    console.log('Updated Database:', tempDatabase.userFavourites);
     return userFavouriteId;
 };
 
@@ -158,7 +158,15 @@ export const getRestaurants = () => {
 };
 
 export const getReviewsByStoreId = (storeId: number) => {
-    return tempDatabase.reviews.filter(review => review.store_id === storeId);
+    return tempDatabase.reviews
+        .filter(review => review.store_id === storeId)
+        .map(review => {
+            const user = tempDatabase.users.find(user => user.user_id === review.user_id);
+            return {
+                ...review,
+                user_username: user ? user.user_username : 'Unknown User',
+            };
+        });
 };
 
 export const searchRestaurantsByName = (query: string) => {
@@ -175,7 +183,7 @@ export const removeFromFavourites = (userId: string, storeId: number) => {
     tempDatabase.userFavourites = tempDatabase.userFavourites.filter(
         fav => !(fav.userId === userId && fav.storeId === storeId)
     );
-    console.log('Removed from Favourites:', tempDatabase);
+    console.log('Removed from Favourites:', tempDatabase.userFavourites);
 };
 
 export const isFavourite = (userId: string, storeId: number) => {
@@ -183,5 +191,23 @@ export const isFavourite = (userId: string, storeId: number) => {
         fav => fav.userId === userId && fav.storeId === storeId
     );
 };
+
+export const addReview = (storeId: number, userId: number, rating: number, description: string, recommend: boolean) => {
+    const newReviewId = tempDatabase.reviews.length + 1; // Simple auto-increment logic
+    const newReview = {
+        review_id: newReviewId,
+        review_date: new Date().toISOString().split('T')[0], // Today's date in 'YYYY-MM-DD' format
+        review_rating: rating,
+        review_description: description,
+        user_id: userId,
+        store_id: storeId,
+        review_business_response: '', // Assuming no business response at creation
+        recommended: recommend,
+    };
+
+    tempDatabase.reviews.push(newReview);
+    console.log('New Review Added:', newReview);
+};
+
 
 export const getDatabase = () => tempDatabase;
