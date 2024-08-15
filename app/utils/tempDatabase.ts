@@ -54,6 +54,16 @@ export const getRestaurants = () => {
     return tempDatabase.restaurants;
 };
 
+export const searchRestaurantsByName = (query: string) => {
+    if (!query) {
+        return getRestaurants();
+    }
+
+    return tempDatabase.restaurants.filter(restaurant =>
+        restaurant.name.toLowerCase().includes(query.toLowerCase())
+    );
+};
+
 export const removeFavorite = (userFavouriteId: string) => {
     tempDatabase.userFavourites = tempDatabase.userFavourites.filter(
         fav => fav.userFavouriteId !== userFavouriteId
