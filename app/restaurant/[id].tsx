@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, FlatList, Button, TouchableOpacity } from 'react-native';
-import { useRouter, useLocalSearchParams } from 'expo-router';
+import { View, Text, Image, StyleSheet, FlatList, Button, TouchableOpacity, Alert } from 'react-native';
+import { useRouter, useLocalSearchParams, router } from 'expo-router';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { addToFavourites } from '../utils/tempDatabase'; // Import temporary database functions
 
 // Sample data for restaurants
 const RESTAURANTS = [
@@ -102,7 +103,6 @@ export default function RestaurantDetailScreen() {
     const { id } = useLocalSearchParams(); // Get the restaurant ID from the URL parameters
     const restaurant = RESTAURANTS.find((item) => item.id.toString() === id); // Find the restaurant by ID
 
-    // If no restaurant is found with the given ID, display a "Restaurant not found" message
     if (!restaurant) {
         return (
             <View style={styles.container}>
@@ -111,7 +111,6 @@ export default function RestaurantDetailScreen() {
         );
     }
 
-    // Function to render each individual review in the FlatList
     const renderReview = ({ item }) => (
         <View style={styles.reviewContainer}>
             <Text style={styles.userName}>{item.user}</Text>
@@ -129,29 +128,17 @@ export default function RestaurantDetailScreen() {
         </View>
     );
 
-    // Function to calculate the width of the rating bar
-    const getBarWidthPercentage = (count: number, total: number) => (count / total) * 100;
+    const getBarWidthPercentage = (count, total) => (count / total) * 100;
 
-    const router = useRouter();  // This should be inside the component
-
-    // Header component for the FlatList
     const renderHeader = () => (
-
         <View>
-            {/* Display the restaurant's image */}
             <Image style={styles.image} source={restaurant.image} />
-            {/* Display the restaurant's name */}
             <Text style={styles.title}>{restaurant.name}</Text>
-            {/* Display the restaurant's description */}
             <Text style={styles.description}>{restaurant.description}</Text>
-            {/* Display the restaurant's overall rating */}
             <Text style={styles.rating}>Rating: {restaurant.rating}</Text>
-
-            {/* Section for displaying a summary of the restaurant's ratings and reviews */}
             <View style={styles.summaryContainer}>
                 <Text style={styles.summaryTitle}>Ratings & Reviews ({restaurant.totalReviews})</Text>
                 <View style={styles.summaryContent}>
-                    {/* Column for displaying the ratings distribution */}
                     <View>
                         {restaurant.ratingsDistribution.map((count, index) => (
                             <View key={index} style={styles.ratingRow}>
@@ -167,17 +154,13 @@ export default function RestaurantDetailScreen() {
                             </View>
                         ))}
                     </View>
-
-                    {/* Column for displaying the overall rating, total reviews, and recommendation percentage */}
                     <View>
                         <Text style={styles.overallRating}>{restaurant.rating.toFixed(1)}</Text>
                         <Text>{restaurant.totalReviews} Reviews</Text>
                         <Text>{restaurant.recommendationPercentage}% Recommended</Text>
                     </View>
                 </View>
-
             </View>
-
             {/* Add a button to write a review */}
             <TouchableOpacity
                 style={styles.submitButton}
@@ -186,123 +169,134 @@ export default function RestaurantDetailScreen() {
                 <Text style={styles.submitButtonText}>Write a Review</Text>
             </TouchableOpacity>
 
-
+           {/* Add a button to add to favourites */}
+           <TouchableOpacity
+                style={styles.favButton}
+                onPress={() => handleAddToFavorites()}
+            >
+                <Text style={styles.submitButtonText}>Add to Favourites</Text>
+            </TouchableOpacity>
         </View>
     );
 
+    const handleAddToFavorites = () => {
+        const userFavouriteId = addToFavourites('current_user_id_placeholder', restaurant.id);
+        Alert.alert('Added to Favourites', `Store ID ${restaurant.id} has been added to your favourites.`);
+    };
+
     return (
-        <FlatList
-            data={restaurant.reviews} // Data source for the list
-            renderItem={renderReview} // Function to render each review
-            keyExtractor={(item, index) => index.toString()} // Unique key for each item
-            ListHeaderComponent={renderHeader} // Header component for the FlatList
-            contentContainerStyle={styles.container} // Additional styles for the list
-        />
+        <View style={styles.container}>
+            <FlatList
+                data={restaurant.reviews}
+                renderItem={renderReview}
+                keyExtractor={(item, index) => index.toString()}
+                ListHeaderComponent={renderHeader}
+                contentContainerStyle={styles.flatListContent}
+            />
+        </View>
     );
 }
 
-// Stylesheet for styling various components
 const styles = StyleSheet.create({
     container: {
-        flex: 1, // Take up the full screen height
-        padding: 16, // Padding inside the container
-        backgroundColor: 'white', // Background color of the container
+        flex: 1,
+        backgroundColor: 'white',
+    },
+    flatListContent: {
+        padding: 16,
     },
     image: {
-        width: '100%', // Make the image full width
-        height: 200, // Set the height of the image
-        marginBottom: 16, // Space below the image
+        width: '100%',
+        height: 200,
+        marginBottom: 16,
     },
     title: {
-        fontSize: 24, // Font size of the title
-        fontWeight: 'bold', // Make the title bold
-        marginBottom: 8, // Space below the title
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 8,
     },
     description: {
-        fontSize: 16, // Font size of the description
-        marginBottom: 8, // Space below the description
+        fontSize: 16,
+        marginBottom: 8,
     },
     rating: {
-        fontSize: 18, // Font size of the rating
-        fontWeight: 'bold', // Make the rating text bold
-        marginBottom: 16, // Space below the rating
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 16,
     },
     summaryContainer: {
-        marginBottom: 16, // Space below the summary container
-        padding: 16, // Padding inside the summary container
-        backgroundColor: '#f9f9f9', // Light gray background color
-        borderRadius: 8, // Rounded corners for the container
+        marginBottom: 16,
+        padding: 16,
+        backgroundColor: '#f9f9f9',
+        borderRadius: 8,
     },
     summaryTitle: {
-        fontSize: 18, // Font size of the summary title
-        fontWeight: 'bold', // Make the summary title bold
-        marginBottom: 8, // Space below the summary title
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 8,
     },
     summaryContent: {
-        flexDirection: 'row', // Arrange children in a row
-        justifyContent: 'space-between', // Space children evenly across the row
+        flexDirection: 'row',
+        justifyContent: 'space-between',
     },
     ratingRow: {
-        flexDirection: 'row', // Arrange star rating value and bar in a row
-        alignItems: 'center', // Align items vertically centered
-        marginBottom: 4, // Space below each rating row
-        width: 200, // Set a fixed width for the rating row
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 4,
+        width: 200,
     },
     ratingBarContainer: {
-        flex: 1, // Allow the bar to take up the remaining space
-        flexDirection: 'row', // Arrange filled and unfilled parts of the bar in a row
-        height: 10, // Set the height of the rating bar
-        backgroundColor: '#e0e0e0', // Light gray background for the unfilled part of the bar
-        borderRadius: 5, // Rounded corners for the rating bar
-        marginLeft: 10, // Space between the star rating value and the bar
-        overflow: 'hidden', // Ensure the filled bar is clipped within the container
+        flex: 1,
+        flexDirection: 'row',
+        height: 10,
+        backgroundColor: '#e0e0e0',
+        borderRadius: 5,
+        marginLeft: 10,
+        overflow: 'hidden',
     },
     ratingBar: {
-        height: '100%', // Ensures the bar fills the height of the container
-        backgroundColor: '#FFD43B', // Yellow color for the filled part of the bar
-        borderRadius: 5, // Rounded corners for the filled part
+        height: '100%',
+        backgroundColor: '#FFD43B',
+        borderRadius: 5,
     },
     overallRating: {
-        fontSize: 32, // Large font size for the overall rating
-        fontWeight: 'bold', // Make the overall rating bold
-    },
-    reviewsList: {
-        paddingBottom: 16, // Padding at the bottom of the reviews list
+        fontSize: 32,
+        fontWeight: 'bold',
     },
     reviewContainer: {
-        padding: 16, // Padding inside each review container
-        borderBottomWidth: 1, // Bottom border for each review
-        borderBottomColor: '#e0e0e0', // Light gray color for the bottom border
+        padding: 16,
+        borderBottomWidth: 1,
+        borderBottomColor: '#e0e0e0',
     },
     userName: {
-        fontSize: 16, // Font size of the reviewer's name
-        fontWeight: 'bold', // Make the reviewer's name bold
-        marginBottom: 4, // Space below the reviewer's name
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginBottom: 4,
     },
     starContainer: {
-        flexDirection: 'row', // Arrange stars in a row
-        marginBottom: 4, // Space below the stars
+        flexDirection: 'row',
+        marginBottom: 4,
     },
     comment: {
-        fontSize: 14, // Font size of the review comment
-        marginBottom: 8, // Space below the comment
+        fontSize: 14,
+        marginBottom: 8,
     },
     reviewFooter: {
-        flexDirection: 'row', // Arrange helpful votes, date, and recommendation status in a row
-        justifyContent: 'space-between', // Space them evenly across the row
-        alignItems: 'center', // Align items vertically centered
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
     },
     helpful: {
-        fontSize: 12, // Font size of the helpfulness text
-        color: '#777', // Gray color for the helpfulness text
+        fontSize: 12,
+        color: '#777',
     },
     date: {
-        fontSize: 12, // Font size of the date text
-        color: '#777', // Gray color for the date text
+        fontSize: 12,
+        color: '#777',
     },
     recommended: {
-        fontSize: 12, // Font size of the recommendation text
-        color: 'green', // Green color for the recommendation text
+        fontSize: 12,
+        color: 'green',
     },
     submitButton: {
         backgroundColor: '#FFFFFF',
@@ -317,5 +311,15 @@ const styles = StyleSheet.create({
         color: '#000000',
         fontSize: 18,
         fontWeight: 'bold',
+    },
+    favButton: {
+        backgroundColor: '#FFFFFF',
+        paddingVertical: 15,
+        borderRadius: 5,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderColor: '#000000',
+        borderWidth: 1,
+        marginTop: 10,
     },
 });
