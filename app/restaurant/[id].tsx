@@ -2,18 +2,25 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
 import { useRouter, useLocalSearchParams, router } from 'expo-router';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { addToFavourites, removeFromFavourites, isFavourite, getRestaurants } from '../utils/tempDatabase'; // Import temporary database functions
+import { addToFavourites, removeFromFavourites, isFavourite, getRestaurants, getReviewsByStoreId } from '../utils/tempDatabase'; // Import necessary functions
 
 export default function RestaurantDetailScreen() {
     const { id } = useLocalSearchParams(); // Get the restaurant ID from the URL parameters
     const restaurants = getRestaurants(); // Call the getRestaurants function to get the array of restaurants
     const restaurant = restaurants.find((item) => item.id.toString() === id); // Find the restaurant by ID
-    const userId = 'current_user_id_placeholder'; // Replace with the actual user ID
+    const userId = 1; // Replace this with dynamic user ID retrieval, for now, it's a static ID for testing
     const [isFav, setIsFav] = useState(false);
+    const [reviews, setReviews] = useState<{ review_id: number; review_date: string; review_rating: number; review_description: string; user_id: number; store_id: number; review_business_response: string; }[]>([]);
 
     useEffect(() => {
-        const favStatus = restaurant ? isFavourite(userId, restaurant.id) : false;
-        setIsFav(favStatus);
+        if (restaurant) {
+            const favStatus = isFavourite(userId.toString(), restaurant.id);
+            setIsFav(favStatus);
+
+            // Fetch reviews for the restaurant
+            const restaurantReviews = getReviewsByStoreId(restaurant.id);
+            setReviews(restaurantReviews);
+        }
     }, [userId, restaurant?.id]);
 
     if (!restaurant) {
@@ -26,17 +33,18 @@ export default function RestaurantDetailScreen() {
 
     const renderReview = ({ item }) => (
         <View style={styles.reviewContainer}>
-            <Text style={styles.userName}>{item.user}</Text>
+            <Text style={styles.userName}>User ID: {item.user_id}</Text>
             <View style={styles.starContainer}>
-                {[...Array(item.rating)].map((_, index) => (
+                {[...Array(Math.floor(item.review_rating))].map((_, index) => (
                     <Icon key={index} name="star" size={20} color="#FFD43B" />
                 ))}
             </View>
-            <Text style={styles.comment}>{item.comment}</Text>
+            <Text style={styles.comment}>{item.review_description}</Text>
             <View style={styles.reviewFooter}>
-                <Text style={styles.helpful}>Helpful? Yes ({item.helpfulYes}) No ({item.helpfulNo})</Text>
-                <Text style={styles.date}>{item.date}</Text>
-                {item.recommended && <Text style={styles.recommended}>✔ Recommended</Text>}
+                <Text style={styles.date}>{item.review_date}</Text>
+                {item.review_business_response && (
+                    <Text style={styles.recommended}>Business Response: {item.review_business_response}</Text>
+                )}
             </View>
         </View>
     );
@@ -96,10 +104,10 @@ export default function RestaurantDetailScreen() {
 
     const handleToggleFavourite = () => {
         if (isFav) {
-            removeFromFavourites(userId, restaurant.id);
+            removeFromFavourites(userId.toString(), restaurant.id);
             Alert.alert('Removed from Favourites', `Store ID ${restaurant.id} has been removed from your favourites.`);
         } else {
-            addToFavourites(userId, restaurant.id);
+            addToFavourites(userId.toString(), restaurant.id);
             Alert.alert('Added to Favourites', `Store ID ${restaurant.id} has been added to your favourites.`);
         }
         setIsFav(!isFav); // Toggle favourite state
@@ -108,9 +116,9 @@ export default function RestaurantDetailScreen() {
     return (
         <View style={styles.container}>
             <FlatList
-                data={restaurant.reviews}
+                data={reviews}
                 renderItem={renderReview}
-                keyExtractor={(item, index) => index.toString()}
+                keyExtractor={(item) => item.review_id.toString()}
                 ListHeaderComponent={renderHeader}
                 contentContainerStyle={styles.flatListContent}
             />

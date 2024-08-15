@@ -58,7 +58,7 @@ export default function WriteReviewScreen() {
             multiline
           />
 
-          <Text style={styles.label}>Add images:</Text>
+          <Text style={styles.label}>Add images (max 3):</Text>
           <View style={styles.imageContainer}>
             <TouchableOpacity style={styles.addImageButton} onPress={handleAddImage}>
               <FontAwesome name="plus" size={32} color="#000" />
