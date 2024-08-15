@@ -1,107 +1,20 @@
-import React from 'react';
-import { View, Text, Image, StyleSheet, FlatList, Button, TouchableOpacity, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
 import { useRouter, useLocalSearchParams, router } from 'expo-router';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { addToFavourites } from '../utils/tempDatabase'; // Import temporary database functions
-
-// Sample data for restaurants
-const RESTAURANTS = [
-    {
-        name: 'Guzman Y Gomez',
-        description: 'Specialises in Mexican cuisine with burritos, nachos, tacos, quesadillas and other Mexican-inspired items available.',
-        rating: 4.5,
-        image: require('../assets/images/guzman.png'),
-        id: 1,
-        reviews: [
-            {
-                user: 'Kristin Watson',
-                rating: 5,
-                comment: 'SO DELICIOUS 😋💯 This is 💯 one hundred percent the best restaurant on campus',
-                date: 'Nov 09, 2022',
-                recommended: true,
-                helpfulYes: 2,
-                helpfulNo: 0,
-            },
-            {
-                user: 'John Doe',
-                rating: 4,
-                comment: 'Great food, but a bit expensive.',
-                date: 'Dec 15, 2022',
-                recommended: true,
-                helpfulYes: 1,
-                helpfulNo: 0,
-            },
-        ],
-        totalReviews: 273,
-        recommendationPercentage: 88,
-        ratingsDistribution: [180, 60, 20, 10, 3],
-    },
-    {
-        name: 'Sushi Sushi',
-        description: 'At Sushi Sushi we see the creation of fresh, healthy sushi as way more than a job; it is an obsession.',
-        rating: 4.7,
-        image: require('../assets/images/sushi-sushi.jpg'),
-        id: 2,
-        reviews: [
-            {
-                user: 'Alice Johnson',
-                rating: 5,
-                comment: 'Best sushi I\'ve ever had! Fresh and delicious.',
-                date: 'Oct 22, 2022',
-                recommended: true,
-                helpfulYes: 3,
-                helpfulNo: 0,
-            },
-            {
-                user: 'Bob Brown',
-                rating: 4,
-                comment: 'Good sushi, but the service could be better.',
-                date: 'Nov 18, 2022',
-                recommended: true,
-                helpfulYes: 0,
-                helpfulNo: 0,
-            },
-        ],
-        totalReviews: 150,
-        recommendationPercentage: 90,
-        ratingsDistribution: [120, 20, 5, 3, 2],
-    },
-    {
-        name: 'Boost',
-        description: 'Boost offers a range of healthy smoothies and freshly squeezed juices made to order, with a variety of dairy-free and gluten-free options.',
-        rating: 5.0,
-        image: require('../assets/images/boost-juice.png'),
-        id: 3,
-        reviews: [
-            {
-                user: 'Cathy White',
-                rating: 5,
-                comment: 'Love the variety of smoothies. Always fresh and tasty!',
-                date: 'Sep 05, 2022',
-                recommended: true,
-                helpfulYes: 4,
-                helpfulNo: 1,
-            },
-            {
-                user: 'Dan Green',
-                rating: 4,
-                comment: 'Great smoothies but a bit pricey for a daily treat.',
-                date: 'Oct 10, 2022',
-                recommended: true,
-                helpfulYes: 1,
-                helpfulNo: 0,
-            },
-        ],
-        totalReviews: 320,
-        recommendationPercentage: 95,
-        ratingsDistribution: [280, 30, 5, 3, 2],
-    },
-];
-
+import { addToFavourites, removeFromFavourites, isFavourite, getRestaurants } from '../utils/tempDatabase'; // Import temporary database functions
 
 export default function RestaurantDetailScreen() {
     const { id } = useLocalSearchParams(); // Get the restaurant ID from the URL parameters
-    const restaurant = RESTAURANTS.find((item) => item.id.toString() === id); // Find the restaurant by ID
+    const restaurants = getRestaurants(); // Call the getRestaurants function to get the array of restaurants
+    const restaurant = restaurants.find((item) => item.id.toString() === id); // Find the restaurant by ID
+    const userId = 'current_user_id_placeholder'; // Replace with the actual user ID
+    const [isFav, setIsFav] = useState(false);
+
+    useEffect(() => {
+        const favStatus = restaurant ? isFavourite(userId, restaurant.id) : false;
+        setIsFav(favStatus);
+    }, [userId, restaurant?.id]);
 
     if (!restaurant) {
         return (
@@ -169,19 +82,27 @@ export default function RestaurantDetailScreen() {
                 <Text style={styles.submitButtonText}>Write a Review</Text>
             </TouchableOpacity>
 
-           {/* Add a button to add to favourites */}
+           {/* Add a button to add/remove from favourites */}
            <TouchableOpacity
                 style={styles.favButton}
-                onPress={() => handleAddToFavorites()}
+                onPress={handleToggleFavourite}
             >
-                <Text style={styles.submitButtonText}>Add to Favourites</Text>
+                <Text style={styles.submitButtonText}>
+                    {isFav ? 'Remove from Favourites' : 'Add to Favourites'}
+                </Text>
             </TouchableOpacity>
         </View>
     );
 
-    const handleAddToFavorites = () => {
-        const userFavouriteId = addToFavourites('current_user_id_placeholder', restaurant.id);
-        Alert.alert('Added to Favourites', `Store ID ${restaurant.id} has been added to your favourites.`);
+    const handleToggleFavourite = () => {
+        if (isFav) {
+            removeFromFavourites(userId, restaurant.id);
+            Alert.alert('Removed from Favourites', `Store ID ${restaurant.id} has been removed from your favourites.`);
+        } else {
+            addToFavourites(userId, restaurant.id);
+            Alert.alert('Added to Favourites', `Store ID ${restaurant.id} has been added to your favourites.`);
+        }
+        setIsFav(!isFav); // Toggle favourite state
     };
 
     return (
