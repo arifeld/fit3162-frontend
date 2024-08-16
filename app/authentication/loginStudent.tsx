@@ -1,28 +1,37 @@
 import React, { useState } from 'react';
+import { Link } from 'expo-router';
 import { StyleSheet, View, Text, SafeAreaView, Image, TextInput, TouchableOpacity } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 export default function loginStudent() {
+
+    // State to manage form input values
     const [form, setForm] = useState({
         email: '',
         password: ''
     })
+
+    // State to toggle password visibility
+    const [showPassword, setShowPassword] = useState(false); 
     
     return (
         <SafeAreaView style={{flex: 1}}>
             <View style={styles.container}>
+                {/* Header section with logo and title */}
                 <View style={styles.header}>
                     <Image 
-                        source={require('./assets/images/monash-logo.png')} 
+                        source={require('../assets/images/monash-logo.png')} 
                         style={styles.monashLogo}
-                        alt="Logo"
                     />
 
-                    <Text style={styles.title}>Sign in</Text>
+                    <Text style={styles.title}>Sign In</Text>
 
                     <Text style={styles.subtitle}>Start reviewing to help students in Monash</Text>
                 </View>
 
+                {/* Form section for user input */}
                 <View style={styles.form}>
+                    {/* Email input field */}
                     <View style={styles.input}>
                         <Text style={styles.inputLabel}>Email Address</Text>
 
@@ -38,18 +47,32 @@ export default function loginStudent() {
                         />
                     </View>
 
+                    {/* Password input field with show/hide functionality */}
                     <View style={styles.input}>
                         <Text style={styles.inputLabel}>Password</Text>
-
-                        <TextInput
-                            style={styles.inputControl}
-                            placeholder='********'
-                            placeholderTextColor='#6b7280'
-                            value={form.password}
-                            onChangeText={password => setForm({...form, password})}
-                        />
+                        <View style={styles.passwordContainer}>
+                            <TextInput
+                                style={styles.inputControlPassword}
+                                placeholder='********'
+                                placeholderTextColor='#6b7280'
+                                value={form.password}
+                                onChangeText={password => setForm({...form, password})}
+                                secureTextEntry={!showPassword} // Toggle password visibility
+                            />
+                            <TouchableOpacity
+                                onPress={() => setShowPassword(!showPassword)} // Toggle the showPassword state
+                                style={styles.eyeIcon}
+                            >
+                                <Icon 
+                                    name={showPassword ? 'eye-off' : 'eye'} 
+                                    size={20} 
+                                    color='#6b7280' 
+                                />
+                            </TouchableOpacity>
+                        </View>
                     </View>
 
+                    {/* Sign In button */}
                     <View style={styles.formAction}>
                         <TouchableOpacity
                             onPress={() => {
@@ -60,6 +83,14 @@ export default function loginStudent() {
                             </View>
                         </TouchableOpacity>
                     </View>
+                </View>
+
+                {/* Footer section with sign-up link */}
+                <View style={styles.footer}>
+                    <Text style={styles.footerText}>Don't have an account?</Text>
+                    <Link style={ {marginLeft: 6} } href={`/authentication/signupStudent`}>
+                        <Text style={styles.signUpText}>Sign Up</Text>
+                    </Link>
                 </View>
             </View>
         </SafeAreaView>
@@ -73,7 +104,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 24,
     },
     header: {
-        marginBottom: 36,
+        marginBottom: 32,
         marginTop: 10
     },
     monashLogo: {
@@ -131,5 +162,38 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: '600',
         color: 'white',
-    }
+    },
+    footer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingTop: 120,
+    },
+    footerText: {},
+    signUpText: {
+        textDecorationLine: 'underline',
+        color: '#007bff',
+    },
+    eyeIcon: {
+        marginLeft: 10,
+        position: 'relative',
+        right: 0
+    },
+    passwordContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: 'white',
+        height: 44,
+        borderRadius: 12,
+        paddingRight: 16,
+    },
+    inputControlPassword: {
+        backgroundColor: 'white',
+        height: 44,
+        paddingHorizontal: 16,
+        borderRadius: 12,
+        fontSize: 15,
+        fontWeight: '500',
+        flex: 1, // For eye icon
+    },
 })
