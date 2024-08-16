@@ -24,23 +24,19 @@ export default function loginStudent() {
                         style={styles.monashLogo}
                     />
 
-                    <Text style={styles.title}>Sign In</Text>
-
-                    <Text style={styles.subtitle}>Start reviewing to help students in Monash</Text>
+                    <Text style={styles.title}>Welcome Back</Text>
                 </View>
 
                 {/* Form section for user input */}
                 <View style={styles.form}>
                     {/* Email input field */}
                     <View style={styles.input}>
-                        <Text style={styles.inputLabel}>Email Address</Text>
-
                         <TextInput
                             autoCapitalize='none'
                             autoCorrect={false}
                             keyboardType='email-address'
                             style={styles.inputControl}
-                            placeholder='john@example.com'
+                            placeholder='Email'
                             placeholderTextColor='#6b7280'
                             value={form.email}
                             onChangeText={email => setForm({...form, email})}
@@ -49,11 +45,10 @@ export default function loginStudent() {
 
                     {/* Password input field with show/hide functionality */}
                     <View style={styles.input}>
-                        <Text style={styles.inputLabel}>Password</Text>
                         <View style={styles.passwordContainer}>
                             <TextInput
                                 style={styles.inputControlPassword}
-                                placeholder='********'
+                                placeholder='Password'
                                 placeholderTextColor='#6b7280'
                                 value={form.password}
                                 onChangeText={password => setForm({...form, password})}
@@ -117,13 +112,8 @@ const styles = StyleSheet.create({
         fontSize: 27,
         fontWeight: '700',
         textAlign: 'center',
-        marginBottom: 6
-    },
-    subtitle: {
-        fontSize: 14,
-        fontWeight: '500',
-        textAlign: 'center',
-        color: 'darkgray'
+        marginBottom: 6,
+        color: '#0E1428'
     },
     form: {},
     input: {
@@ -137,20 +127,31 @@ const styles = StyleSheet.create({
     },
     inputControl: {
         backgroundColor: 'white',
-        height: 44,
+        height: 55,
         paddingHorizontal: 16,
-        borderRadius: 12,
+        borderRadius: 5,
         fontSize: 15,
-        fontWeight: '500'
+        fontWeight: '500',
+        borderColor: 'gray',
+        borderWidth: 1.5
     },
-    formAction: {
-
+    inputControlPassword: {
+        backgroundColor: 'white',
+        height: 55,
+        paddingHorizontal: 16,
+        borderRadius: 5,
+        fontSize: 15,
+        fontWeight: '500',
+        borderColor: 'gray',
+        borderWidth: 1.5,
+        flex: 1,
     },
+    formAction: {},
     btn: {
-        backgroundColor: '#075eec',
+        backgroundColor: '#0E1428',
         borderRadius: 8,
         borderWidth: 1,
-        borderColor: '#075eec',
+        borderColor: '#0E1428',
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
@@ -166,34 +167,23 @@ const styles = StyleSheet.create({
     footer: {
         flexDirection: 'row',
         justifyContent: 'center',
+        marginTop: 20,
         alignItems: 'center',
-        paddingTop: 120,
     },
     footerText: {},
     signUpText: {
-        textDecorationLine: 'underline',
-        color: '#007bff',
+        fontWeight: '900',
+        color: '#0E1428',
     },
     eyeIcon: {
-        marginLeft: 10,
-        position: 'relative',
-        right: 0
+        position: 'absolute',
+        right: 16
     },
     passwordContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         backgroundColor: 'white',
-        height: 44,
-        borderRadius: 12,
-        paddingRight: 16,
-    },
-    inputControlPassword: {
-        backgroundColor: 'white',
-        height: 44,
-        paddingHorizontal: 16,
-        borderRadius: 12,
-        fontSize: 15,
-        fontWeight: '500',
-        flex: 1, // For eye icon
+        height: 55,
+        borderRadius: 5,
     },
 })

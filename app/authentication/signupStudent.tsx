@@ -6,9 +6,9 @@ export default function signupStudent() {
 
     // State to manage form input values
     const [form, setForm] = useState({
+        name: '',
         email: '',
-        password: '',
-        confirmPassword: ''
+        password: ''
     })
 
     // State to toggle password visibility
@@ -30,29 +30,38 @@ export default function signupStudent() {
 
             {/* Form section for user input */}
             <View style={styles.form}>
-                {/* Email input field */}
+                {/* Name input field */}
                 <View style={styles.input}>
-                    <Text style={styles.inputLabel}>Email Address</Text>
-
                     <TextInput
                         autoCapitalize='none'
                         autoCorrect={false}
-                        keyboardType='email-address'
                         style={styles.inputControl}
-                        placeholder='john@example.com'
+                        placeholder='Name'
                         placeholderTextColor='#6b7280'
                         value={form.email}
                         onChangeText={email => setForm({...form, email})}
                     />
                 </View>
+                {/* Email input field */}
+                <View style={styles.input}>
+                    <TextInput
+                        autoCapitalize='none'
+                        autoCorrect={false}
+                        keyboardType='email-address'
+                        style={styles.inputControl}
+                        placeholder='Email'
+                        placeholderTextColor='#6b7280'
+                        value={form.name}
+                        onChangeText={name => setForm({...form, name})}
+                    />
+                </View>
 
                 {/* Password input field with show/hide functionality */}
                 <View style={styles.input}>
-                    <Text style={styles.inputLabel}>Password</Text>
                     <View style={styles.passwordContainer}>
                         <TextInput
                             style={styles.inputControlPassword}
-                            placeholder='********'
+                            placeholder='Password'
                             placeholderTextColor='#6b7280'
                             value={form.password}
                             onChangeText={password => setForm({...form, password})}
@@ -64,31 +73,6 @@ export default function signupStudent() {
                         >
                             <Icon 
                                 name={showPassword ? 'eye-off' : 'eye'} 
-                                size={20} 
-                                color='#6b7280' 
-                            />
-                        </TouchableOpacity>
-                    </View>
-                </View>
-
-                {/* Confirm Password input field */}
-                <View style={styles.input}>
-                    <Text style={styles.inputLabel}>Confirm Password</Text>
-                    <View style={styles.passwordContainer}>
-                        <TextInput
-                            style={styles.inputControlPassword}
-                            placeholder='********'
-                            placeholderTextColor='#6b7280'
-                            value={form.confirmPassword}
-                            onChangeText={confirmPassword => setForm({...form, confirmPassword})}
-                            secureTextEntry={!showConfirmPassword} // Toggle confirm password visibility
-                        />
-                        <TouchableOpacity
-                            onPress={() => setShowConfirmPassword(!showConfirmPassword)} // Toggle the showConfirmPassword state
-                            style={styles.eyeIcon}
-                        >
-                            <Icon 
-                                name={showConfirmPassword ? 'eye-off' : 'eye'} 
                                 size={20} 
                                 color='#6b7280' 
                             />
@@ -120,7 +104,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 24,
     },
     header: {
-        marginBottom: 36,
+        marginBottom: 32,
         marginTop: 10
     },
     monashLogo: {
@@ -133,7 +117,8 @@ const styles = StyleSheet.create({
         fontSize: 27,
         fontWeight: '700',
         textAlign: 'center',
-        marginBottom: 6
+        marginBottom: 6,
+        color: '#0E1428'
     },
     form: {},
     input: {
@@ -147,27 +132,31 @@ const styles = StyleSheet.create({
     },
     inputControl: {
         backgroundColor: 'white',
-        height: 44,
+        height: 55,
         paddingHorizontal: 16,
-        borderRadius: 12,
+        borderRadius: 5,
         fontSize: 15,
         fontWeight: '500',
+        borderColor: 'gray',
+        borderWidth: 1.5
     },
     inputControlPassword: {
         backgroundColor: 'white',
-        height: 44,
+        height: 55,
         paddingHorizontal: 16,
-        borderRadius: 12,
+        borderRadius: 5,
         fontSize: 15,
         fontWeight: '500',
-        flex: 1, // For eye icon
+        borderColor: 'gray',
+        borderWidth: 1.5,
+        flex: 1,
     },
     formAction: {},
     btn: {
-        backgroundColor: '#075eec',
+        backgroundColor: '#0E1428',
         borderRadius: 8,
         borderWidth: 1,
-        borderColor: '#075eec',
+        borderColor: '#0E1428',
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
@@ -184,13 +173,11 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         backgroundColor: 'white',
-        height: 44,
-        borderRadius: 12,
-        paddingRight: 16,
+        height: 55,
+        borderRadius: 5,
     },
     eyeIcon: {
-        marginLeft: 10,
-        position: 'relative',
-        right: 0
+        position: 'absolute',
+        right: 16
     },
 })
