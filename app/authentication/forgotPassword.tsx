@@ -24,7 +24,7 @@ export default function loginStudent() {
                         style={styles.monashLogo}
                     />
 
-                    <Text style={styles.title}>Welcome Back</Text>
+                    <Text style={styles.title}>Restore Password</Text>
                 </View>
 
                 {/* Form section for user input */}
@@ -36,63 +36,31 @@ export default function loginStudent() {
                             autoCorrect={false}
                             keyboardType='email-address'
                             style={styles.inputControl}
-                            placeholder='Business Email'
+                            placeholder='Email'
                             placeholderTextColor='#6b7280'
                             value={form.email}
                             onChangeText={email => setForm({...form, email})}
                         />
                     </View>
 
-                    {/* Password input field with show/hide functionality */}
-                    <View style={styles.input}>
-                        <View style={styles.passwordContainer}>
-                            <TextInput
-                                style={styles.inputControlPassword}
-                                placeholder='Password'
-                                placeholderTextColor='#6b7280'
-                                value={form.password}
-                                onChangeText={password => setForm({...form, password})}
-                                secureTextEntry={!showPassword} // Toggle password visibility
-                            />
-                            <TouchableOpacity
-                                onPress={() => setShowPassword(!showPassword)} // Toggle the showPassword state
-                                style={styles.eyeIcon}
-                            >
-                                <Icon 
-                                    name={showPassword ? 'eye-off' : 'eye'} 
-                                    size={20} 
-                                    color='#6b7280' 
-                                />
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-
-                    {/* Forgot Password */}
-                    <View style={styles.forgotPasswordContainer}>
-                        <Link href={`/authentication/forgotPassword`}>
-                            <Text style={styles.forgotPassword}>Forgot Password?</Text>
-                        </Link>
-                    </View>
-
-                    {/* Sign In button */}
+                    {/* Reset button */}
                     <View style={styles.formAction}>
                         <TouchableOpacity
                             onPress={() => {
                                 // awaiting backend
                             }}>
                             <View style={styles.btn}>
-                                <Text style={styles.btnText}>Sign in</Text>
+                                <Text style={styles.btnText}>Send reset instructions</Text>
                             </View>
                         </TouchableOpacity>
                     </View>
-                </View>
 
-                {/* Footer section with sign-up link */}
-                <View style={styles.footer}>
-                    <Text style={styles.footerText}>Don't have an account?</Text>
-                    <Link style={ {marginLeft: 6} } href={`/authentication/signupStudent`}>
-                        <Text style={styles.signUpText}>Sign Up</Text>
-                    </Link>
+                    {/* Back to login button */}
+                    <View style={styles.backToLoginContainer}>
+                        <Link href={`/authentication/loginBusiness`}>
+                            <Text style={styles.backToLogin}>{`<`} Back to login?</Text>
+                        </Link>
+                    </View>
                 </View>
             </View>
         </SafeAreaView>
@@ -172,33 +140,11 @@ const styles = StyleSheet.create({
         color: 'white',
         textTransform: 'uppercase'
     },
-    footer: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        marginTop: 20,
-        alignItems: 'center',
-    },
-    footerText: {},
-    signUpText: {
-        fontWeight: '900',
-        color: '#0E1428',
-    },
-    eyeIcon: {
-        position: 'absolute',
-        right: 16
-    },
-    passwordContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: 'white',
-        height: 55,
-        borderRadius: 5,
-    },
-    forgotPassword: {
+    backToLogin: {
         color: 'grey', 
     },
-    forgotPasswordContainer: {
-        alignSelf: 'flex-end',
-        marginTop: -7
+    backToLoginContainer: {
+        alignSelf: 'flex-start',
+        marginTop: 15
     },
 })

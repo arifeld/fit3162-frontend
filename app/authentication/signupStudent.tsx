@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 27,
-        fontWeight: '700',
+        fontWeight: '600',
         textAlign: 'center',
         marginBottom: 6,
         color: '#0E1428'
@@ -168,6 +168,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: '600',
         color: 'white',
+        textTransform: 'uppercase'
     },
     passwordContainer: {
         flexDirection: 'row',

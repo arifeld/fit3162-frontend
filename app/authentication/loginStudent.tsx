@@ -67,6 +67,13 @@ export default function loginStudent() {
                         </View>
                     </View>
 
+                    {/* Forgot Password */}
+                    <View style={styles.forgotPasswordContainer}>
+                        <Link href={`/authentication/forgotPassword`}>
+                            <Text style={styles.forgotPassword}>Forgot Password?</Text>
+                        </Link>
+                    </View>
+
                     {/* Sign In button */}
                     <View style={styles.formAction}>
                         <TouchableOpacity
@@ -110,7 +117,7 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 27,
-        fontWeight: '700',
+        fontWeight: '600',
         textAlign: 'center',
         marginBottom: 6,
         color: '#0E1428'
@@ -163,6 +170,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: '600',
         color: 'white',
+        textTransform: 'uppercase'
     },
     footer: {
         flexDirection: 'row',
@@ -185,5 +193,12 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         height: 55,
         borderRadius: 5,
+    },
+    forgotPassword: {
+        color: 'grey', 
+    },
+    forgotPasswordContainer: {
+        alignSelf: 'flex-end',
+        marginTop: -7
     },
 })
