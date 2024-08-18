@@ -89,7 +89,7 @@ export default function loginStudent() {
                     <View style={styles.formAction}>
                         <TouchableOpacity   
                             //go to home for now
-                            onPress={() => router.push('/(tabs)/home')}>
+                            onPress={() => router.push('/student/home')}>
                             <View style={styles.btn}>
                                 <Text style={styles.btnText}>Sign in</Text>
                             </View>
