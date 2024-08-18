@@ -13,7 +13,6 @@ export default function signupStudent() {
 
     // State to toggle password visibility
     const [showPassword, setShowPassword] = useState(false); 
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     return ( 
     <SafeAreaView style={{flex: 1}}>
@@ -38,8 +37,8 @@ export default function signupStudent() {
                         style={styles.inputControl}
                         placeholder='Name'
                         placeholderTextColor='#6b7280'
-                        value={form.email}
-                        onChangeText={email => setForm({...form, email})}
+                        value={form.name}
+                        onChangeText={name => setForm({...form, name})}
                     />
                 </View>
                 {/* Email input field */}
@@ -51,8 +50,8 @@ export default function signupStudent() {
                         style={styles.inputControl}
                         placeholder='Email'
                         placeholderTextColor='#6b7280'
-                        value={form.name}
-                        onChangeText={name => setForm({...form, name})}
+                        value={form.email}
+                        onChangeText={email => setForm({...form, email})}
                     />
                 </View>
 
