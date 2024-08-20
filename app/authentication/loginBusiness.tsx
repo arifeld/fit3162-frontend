@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useRouter } from 'expo-router';
+import React, { useLayoutEffect, useState } from 'react';
+import { useNavigation, useRouter } from 'expo-router';
 import { StyleSheet, View, Text, SafeAreaView, Image, TextInput, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -85,6 +85,14 @@ export default function loginBusiness() {
                             <View style={styles.btn}>
                                 <Text style={styles.btnText}>Sign in</Text>
                             </View>
+                        </TouchableOpacity>
+                    </View>
+
+                    {/* Footer section with sign-up link */}
+                    <View style={styles.footer}>
+                        <Text style={styles.footerText}>Don't have an account?</Text>
+                        <TouchableOpacity onPress={() => router.push('/authentication/signupBusiness')}>
+                            <Text style={styles.signUpText}>Sign Up</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -176,6 +184,7 @@ const styles = StyleSheet.create({
     signUpText: {
         fontWeight: '900',
         color: '#0E1428',
+        marginLeft: 3
     },
     eyeIcon: {
         position: 'absolute',
