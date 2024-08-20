@@ -1,21 +1,33 @@
 import React, { useState } from 'react';
-import { Link } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { StyleSheet, View, Text, SafeAreaView, Image, TextInput, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-export default function loginStudent() {
+export default function loginBusiness() {
+    const router = useRouter();
 
     // State to manage form input values
     const [form, setForm] = useState({
         email: '',
         password: ''
-    })
+    });
 
     // State to toggle password visibility
-    const [showPassword, setShowPassword] = useState(false); 
-    
+    const [showPassword, setShowPassword] = useState(false);
+
+    const handleLogin = () => {
+        // Perform your login validation or API call here
+
+        // Pass userType as a parameter
+        router.push({
+            pathname: '/business/businessHome',
+            params: { userType: 'business' },
+        });
+    };
+
     return (
-        <SafeAreaView style={{flex: 1}}>
+        <SafeAreaView style={{ flex: 1 }}>
+            {/* Your component JSX here */}
             <View style={styles.container}>
                 {/* Header section with logo and title */}
                 <View style={styles.header}>
@@ -39,7 +51,7 @@ export default function loginStudent() {
                             placeholder='Business Email'
                             placeholderTextColor='#6b7280'
                             value={form.email}
-                            onChangeText={email => setForm({...form, email})}
+                            onChangeText={email => setForm({ ...form, email })}
                         />
                     </View>
 
@@ -51,7 +63,7 @@ export default function loginStudent() {
                                 placeholder='Password'
                                 placeholderTextColor='#6b7280'
                                 value={form.password}
-                                onChangeText={password => setForm({...form, password})}
+                                onChangeText={password => setForm({ ...form, password })}
                                 secureTextEntry={!showPassword} // Toggle password visibility
                             />
                             <TouchableOpacity
@@ -67,32 +79,14 @@ export default function loginStudent() {
                         </View>
                     </View>
 
-                    {/* Forgot Password */}
-                    <View style={styles.forgotPasswordContainer}>
-                        <Link href={`/authentication/forgotPassword`}>
-                            <Text style={styles.forgotPassword}>Forgot Password?</Text>
-                        </Link>
-                    </View>
-
                     {/* Sign In button */}
                     <View style={styles.formAction}>
-                        <TouchableOpacity
-                            onPress={() => {
-                                // awaiting backend
-                            }}>
+                        <TouchableOpacity onPress={handleLogin}>
                             <View style={styles.btn}>
                                 <Text style={styles.btnText}>Sign in</Text>
                             </View>
                         </TouchableOpacity>
                     </View>
-                </View>
-
-                {/* Footer section with sign-up link */}
-                <View style={styles.footer}>
-                    <Text style={styles.footerText}>Don't have an account?</Text>
-                    <Link style={ {marginLeft: 6} } href={`/authentication/signupStudent`}>
-                        <Text style={styles.signUpText}>Sign Up</Text>
-                    </Link>
                 </View>
             </View>
         </SafeAreaView>
@@ -194,11 +188,4 @@ const styles = StyleSheet.create({
         height: 55,
         borderRadius: 5,
     },
-    forgotPassword: {
-        color: 'grey', 
-    },
-    forgotPasswordContainer: {
-        alignSelf: 'flex-end',
-        marginTop: -7
-    },
-})
+});
