@@ -15,27 +15,16 @@ export default function loginBusiness() {
     // State to toggle password visibility
     const [showPassword, setShowPassword] = useState(false);
 
-    const handleLogin = () => {
-        // Perform your login validation or API call here
-
-        // Pass userType as a parameter
-        router.push({
-            pathname: '/business/businessHome',
-            params: { userType: 'business' },
-        });
-    };
-
     return (
         <SafeAreaView style={{ flex: 1 }}>
             {/* Your component JSX here */}
             <View style={styles.container}>
                 {/* Header section with logo and title */}
                 <View style={styles.header}>
-                    <Image 
-                        source={require('../assets/images/monash-logo.png')} 
+                    <Image
+                        source={require('../assets/images/monash-logo.png')}
                         style={styles.monashLogo}
                     />
-
                     <Text style={styles.title}>Welcome Back</Text>
                 </View>
 
@@ -70,10 +59,10 @@ export default function loginBusiness() {
                                 onPress={() => setShowPassword(!showPassword)} // Toggle the showPassword state
                                 style={styles.eyeIcon}
                             >
-                                <Icon 
-                                    name={showPassword ? 'eye-off' : 'eye'} 
-                                    size={20} 
-                                    color='#6b7280' 
+                                <Icon
+                                    name={showPassword ? 'eye-off' : 'eye'}
+                                    size={20}
+                                    color='#6b7280'
                                 />
                             </TouchableOpacity>
                         </View>
@@ -81,9 +70,20 @@ export default function loginBusiness() {
 
                     {/* Sign In button */}
                     <View style={styles.formAction}>
-                        <TouchableOpacity onPress={handleLogin}>
+                        <TouchableOpacity
+                            onPress={() => router.replace('/business/businessHome')}>
                             <View style={styles.btn}>
                                 <Text style={styles.btnText}>Sign in</Text>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+
+                    {/* Button to go back to Student Login */}
+                    <View style={styles.formAction}>
+                        <TouchableOpacity
+                            onPress={() => router.replace('/authentication/loginStudent')}>
+                            <View style={[styles.btn]}>
+                                <Text style={styles.btnText}>Back to Student Login</Text>
                             </View>
                         </TouchableOpacity>
                     </View>
@@ -124,7 +124,6 @@ const styles = StyleSheet.create({
         fontSize: 17,
         fontWeight: '600',
         marginBottom: 8
-
     },
     inputControl: {
         backgroundColor: 'white',
@@ -165,6 +164,9 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         color: 'white',
         textTransform: 'uppercase'
+    },
+    backBtn: {
+        backgroundColor: '#6b7280', // Different color for the back button
     },
     footer: {
         flexDirection: 'row',
