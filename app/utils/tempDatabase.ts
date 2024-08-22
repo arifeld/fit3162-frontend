@@ -50,6 +50,8 @@ const tempDatabase = {
             totalReviews: 273,
             recommendationPercentage: 88,
             ratingsDistribution: [180, 60, 20, 10, 3],
+            latitude: -37.8136,  // Example latitude
+            longitude: 144.9631, // Example longitude
         },
         {
             name: 'Sushi Sushi',
@@ -60,6 +62,8 @@ const tempDatabase = {
             totalReviews: 150,
             recommendationPercentage: 90,
             ratingsDistribution: [120, 20, 5, 3, 2],
+            latitude: -37.8156,
+            longitude: 144.9651,
         },
         {
             name: 'Boost',
@@ -70,6 +74,8 @@ const tempDatabase = {
             totalReviews: 320,
             recommendationPercentage: 95,
             ratingsDistribution: [280, 30, 5, 3, 2],
+            latitude: -37.8126,
+            longitude: 144.9611,
         },
     ],
     reviews: [
