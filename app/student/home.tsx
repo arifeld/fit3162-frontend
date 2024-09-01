@@ -1,12 +1,12 @@
 import React, { useState, useCallback } from 'react';
 import { StyleSheet, View, FlatList, Text, RefreshControl } from 'react-native';
-import Card from '../components/RestaurantCard';
-import { getRestaurants } from '../utils/tempDatabase';
+import Card from '../components/StoreCard';
+import { getStores } from '../utils/tempDatabase';
 import { useLayoutEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 
 export default function Home() {
-  const [restaurants, setRestaurants] = useState(getRestaurants());
+  const [stores, setStores] = useState(getStores());
   const [refreshing, setRefreshing] = useState(false);
 
   const navigation = useNavigation();
@@ -21,20 +21,20 @@ export default function Home() {
     setRefreshing(true);
     // Simulate a network request to refresh data
     setTimeout(() => {
-      setRestaurants(getRestaurants()); // Update with new data
+      setStores(getStores()); // Update with new data
       setRefreshing(false);
     }, 2000);
   }, []);
 
   return (
     <View style={styles.outerContainer}>
-      {restaurants.length === 0 ? (
+      {stores.length === 0 ? (
         <Text style={styles.emptyMessage}>No restaurants available</Text>
       ) : (
         <FlatList
-          data={restaurants}
-          keyExtractor={(restaurant) => restaurant.id.toString()}
-          renderItem={({ item }) => <Card info={item} />}
+          data={stores}
+          keyExtractor={(restaurant) => restaurant.store_id.toString()}
+          renderItem={({ item }) => <Card info={{ store_id: item.store_id, store_name: item.store_name, store_description: item.store_description, rating: item.rating, image: item.image }} />}
           contentContainerStyle={styles.container} // Style to wrap list content
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />

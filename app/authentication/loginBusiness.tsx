@@ -1,25 +1,49 @@
 import React, { useState } from 'react';
 import { useRouter } from 'expo-router';
-import { StyleSheet, View, Text, SafeAreaView, Image, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, SafeAreaView, Image, TextInput, TouchableOpacity, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { getDatabase } from '../utils/tempDatabase'; // Import temp database
 
 export default function loginBusiness() {
     const router = useRouter();
 
-    // State to manage form input values
     const [form, setForm] = useState({
         email: '',
         password: ''
     });
 
-    // State to toggle password visibility
     const [showPassword, setShowPassword] = useState(false);
+
+    const handleLogin = () => {
+        const { email, password } = form;
+        const { users, businesses } = getDatabase();
+    
+        // Simulate authentication by checking against tempDatabase
+        const user = users.find(u => u.user_email === email && u.user_password === password);
+    
+        if (user) {
+            // Find the business associated with this user (owner)
+            const business = businesses.find(b => b.owner_id === user.user_id);
+    
+            if (business) {
+                // Navigate to BusinessHome and pass the businessId as a route param
+                router.replace({
+                    pathname: '/business/businessHome',
+                    params: { businessId: business.business_id },
+                });
+            } else {
+                Alert.alert('Error', 'No business found for this user.');
+            }
+        } else {
+            Alert.alert('Error', 'Invalid email or password.');
+        }
+    };
+    
+    
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
-            {/* Your component JSX here */}
             <View style={styles.container}>
-                {/* Header section with logo and title */}
                 <View style={styles.header}>
                     <Image
                         source={require('../assets/images/monash-logo.png')}
@@ -28,9 +52,7 @@ export default function loginBusiness() {
                     <Text style={styles.title}>Welcome Back</Text>
                 </View>
 
-                {/* Form section for user input */}
                 <View style={styles.form}>
-                    {/* Email input field */}
                     <View style={styles.input}>
                         <TextInput
                             autoCapitalize='none'
@@ -44,7 +66,6 @@ export default function loginBusiness() {
                         />
                     </View>
 
-                    {/* Password input field with show/hide functionality */}
                     <View style={styles.input}>
                         <View style={styles.passwordContainer}>
                             <TextInput
@@ -53,10 +74,10 @@ export default function loginBusiness() {
                                 placeholderTextColor='#6b7280'
                                 value={form.password}
                                 onChangeText={password => setForm({ ...form, password })}
-                                secureTextEntry={!showPassword} // Toggle password visibility
+                                secureTextEntry={!showPassword}
                             />
                             <TouchableOpacity
-                                onPress={() => setShowPassword(!showPassword)} // Toggle the showPassword state
+                                onPress={() => setShowPassword(!showPassword)}
                                 style={styles.eyeIcon}
                             >
                                 <Icon
@@ -68,20 +89,16 @@ export default function loginBusiness() {
                         </View>
                     </View>
 
-                    {/* Sign In button */}
                     <View style={styles.formAction}>
-                        <TouchableOpacity
-                            onPress={() => router.replace('/business/businessHome')}>
+                        <TouchableOpacity onPress={handleLogin}>
                             <View style={styles.btn}>
                                 <Text style={styles.btnText}>Sign in</Text>
                             </View>
                         </TouchableOpacity>
                     </View>
 
-                    {/* Button to go back to Student Login */}
                     <View style={styles.formAction}>
-                        <TouchableOpacity
-                            onPress={() => router.replace('/authentication/loginStudent')}>
+                        <TouchableOpacity onPress={() => router.replace('/authentication/loginStudent')}>
                             <View style={[styles.btn]}>
                                 <Text style={styles.btnText}>Back to Student Login</Text>
                             </View>
@@ -94,6 +111,7 @@ export default function loginBusiness() {
 }
 
 const styles = StyleSheet.create({
+    // Same styles as before...
     container: {
         flex: 1,
         paddingTop: 10,

@@ -2,11 +2,11 @@ import React from 'react';
 import { View, StyleSheet, TouchableOpacity, Text, Alert } from 'react-native';
 import MapView, { Marker, Callout } from 'react-native-maps';
 import { Link } from 'expo-router';
-import { getRestaurants } from '../utils/tempDatabase';
+import { getStores } from '../utils/tempDatabase';
 import * as Linking from 'expo-linking';
 
 export default function NearMe() {
-  const restaurants = getRestaurants();
+  const stores = getStores();
 
   const openNavigation = (latitude: number, longitude: number) => {
     const url = `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}&travelmode=driving&dir_action=navigate`;
@@ -26,19 +26,19 @@ export default function NearMe() {
           longitudeDelta: 0.05,
         }}
       >
-        {restaurants.map((restaurant) => (
+        {stores.map((store) => (
           <Marker
-            key={restaurant.id}
+            key={store.store_id}
             coordinate={{
-              latitude: restaurant.latitude,
-              longitude: restaurant.longitude,
+              latitude: store.latitude,
+              longitude: store.longitude,
             }}
-            title={restaurant.name}
+            title={store.store_name}
           >
             <Callout>
               <View style={styles.calloutContainer}>
                 <Link
-                  href={`/restaurant/${restaurant.id}`}  // Use Link to navigate to the details page
+                  href={`/restaurant/${store.store_id}`}  // Use Link to navigate to the details page
                   asChild
                 >
                   <TouchableOpacity>
@@ -46,7 +46,7 @@ export default function NearMe() {
                   </TouchableOpacity>
                 </Link>
                 <TouchableOpacity
-                  onPress={() => openNavigation(restaurant.latitude, restaurant.longitude)}
+                  onPress={() => openNavigation(store.latitude, store.longitude)}
                 >
                   <Text style={styles.calloutOption}>Navigate</Text>
                 </TouchableOpacity>
