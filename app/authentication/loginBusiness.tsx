@@ -96,7 +96,6 @@ export default function loginBusiness() {
                             </View>
                         </TouchableOpacity>
                     </View>
-
                     <View style={styles.formAction}>
                         <TouchableOpacity onPress={() => router.replace('/authentication/loginStudent')}>
                             <View style={[styles.btn]}>
@@ -196,6 +195,7 @@ const styles = StyleSheet.create({
     signUpText: {
         fontWeight: '900',
         color: '#0E1428',
+        marginLeft: 3
     },
     eyeIcon: {
         position: 'absolute',

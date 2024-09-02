@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { StyleSheet, View, Text, SafeAreaView, Image, TextInput, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useLayoutEffect } from 'react';
@@ -203,6 +203,7 @@ const styles = StyleSheet.create({
     signUpText: {
         fontWeight: '900',
         color: '#0E1428',
+        marginLeft: 3
     },
     eyeIcon: {
         position: 'absolute',

@@ -182,7 +182,18 @@ export const getFavourites = (userId: string) => {
     );
 };
 
-export const getStores = () => {
+export const getStores = () => {    
+    const url = 'http://localhost:4000/store';
+
+    fetch(url)
+    .then(response => {
+        if (!response.ok) {
+            console.log(response);
+        }
+        return response.json();
+    })
+    .then(data => console.log(data))
+    .catch(error => console.error('There was a problem with the fetching data', error));
     return tempDatabase.stores; // This now returns stores instead of restaurants
 };
 

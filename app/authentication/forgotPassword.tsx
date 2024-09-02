@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
-import { Link } from 'expo-router';
+import React, { useLayoutEffect, useState } from 'react';
+import { Link, useNavigation } from 'expo-router';
 import { StyleSheet, View, Text, SafeAreaView, Image, TextInput, TouchableOpacity } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
 
 export default function loginStudent() {
 
@@ -11,8 +10,13 @@ export default function loginStudent() {
         password: ''
     })
 
-    // State to toggle password visibility
-    const [showPassword, setShowPassword] = useState(false); 
+    const navigation = useNavigation();
+
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            headerShown: false, // Hides the navigation bar
+        });
+    }, [navigation]);
     
     return (
         <SafeAreaView style={{flex: 1}}>
@@ -57,7 +61,7 @@ export default function loginStudent() {
 
                     {/* Back to login button */}
                     <View style={styles.backToLoginContainer}>
-                        <Link href={`/authentication/loginBusiness`}>
+                        <Link href={`/authentication/loginStudent`}>
                             <Text style={styles.backToLogin}>{`<`} Back to login?</Text>
                         </Link>
                     </View>
