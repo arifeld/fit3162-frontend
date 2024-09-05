@@ -155,9 +155,9 @@ export const getFavourites = (userId: string) => {
 
 export const getRestaurants = () => {
     
-    const url = 'http://localhost:4000/store';
+    const url = process.env.EXPO_PUBLIC_API_URL;
 
-    fetch(url)
+    fetch(`${url}/store`)
     .then(response => {
         if (!response.ok) {
             console.log(response);
@@ -168,7 +168,6 @@ export const getRestaurants = () => {
     .catch(error => console.error('There was a problem with the fetching data', error));
 
     return tempDatabase.restaurants;
-
 };
 
 export const getReviewsByStoreId = (storeId: number) => {
