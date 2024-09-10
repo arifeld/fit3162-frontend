@@ -3,29 +3,29 @@ import { View, Text, StyleSheet, Dimensions, Image, TouchableOpacity } from 'rea
 import { Link } from 'expo-router';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-type RestaurantCardProps = {
+type StoreCardProps = {
   info: {
-    id: number;
-    name: string;
-    description: string;
+    store_id: number;
+    store_name: string;
+    store_description: string;
     rating: number;
     image: any;
   };
 };
 
-const RestaurantCard: React.FC<RestaurantCardProps> = ({ info }) => {
+const StoreCard: React.FC<StoreCardProps> = ({ info }) => {
   return (
     <Link
-      href={`/restaurant/${info.id}`}  // Just pass the path with dynamic id
-      asChild
+    href={`/store/${info.store_id}`}  // Just pass the path with dynamic id
+    asChild
     >
       <TouchableOpacity style={styles.cardContainer}>
         <Image style={styles.imageStyle} source={info.image} />
         <View style={styles.descriptionContainer}>
           <View style={styles.textContainer}>
-            <Text style={styles.title}>{info.name}</Text>
+            <Text style={styles.title}>{info.store_name}</Text>
             <Text style={styles.description} numberOfLines={2} ellipsizeMode="tail">
-              {info.description}
+              {info.store_description}
             </Text>
           </View>
           <View style={styles.starContainer}>
@@ -83,4 +83,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RestaurantCard;
+export default StoreCard;
