@@ -7,6 +7,10 @@ module.exports = {
           node: 'current'
         }
       }
-    ]
+    ],
+    'babel-preset-expo' 
+  ],
+  plugins: [
+    ["module:react-native-dotenv"] 
   ]
 };

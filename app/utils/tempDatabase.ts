@@ -11,8 +11,6 @@ const tempDatabase = {
         },
         {
             user_id: 2,
-            user_email: '1',
-            user_password: '1',
             user_username: 'John Doe',
         },
         {
@@ -182,11 +180,24 @@ export const getFavourites = (userId: string) => {
     );
 };
 
-export const getStores = () => {
+export const getStores = () => {    
+    const url = process.env.EXPO_PUBLIC_API_URL;
+
+    fetch(`${url}/store`)
+    .then(response => {
+        if (!response.ok) {
+            console.log(response);
+        }
+        return response.json();
+    })
+    .then(data => console.log(data))
+    .catch(error => console.error('There was a problem with the fetching data', error));
     return tempDatabase.stores; // This now returns stores instead of restaurants
 };
 
 export const getReviewsByStoreId = (storeId: number) => {
+
+    const url = process.env.EXPO_PUBLIC_API_URL;
     return tempDatabase.reviews
         .filter(review => review.store_id === storeId)
         .map(review => {

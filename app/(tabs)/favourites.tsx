@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, FlatList, StyleSheet } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
-import Card from '../components/StoreCard';
+import Card from '../components/RestaurantCard';
 import { getFavourites } from '../utils/tempDatabase';
 
 export default function Favourites() {
