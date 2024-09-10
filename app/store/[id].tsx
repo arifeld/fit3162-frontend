@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
+import { NavigationProp, useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { addToFavourites, removeFromFavourites, isFavourite, getStores, getReviewsByStoreId } from '../utils/tempDatabase'; // Updated function import to getStores
 import { router, useLocalSearchParams } from 'expo-router';
@@ -18,6 +18,15 @@ export default function StoreDetailScreen() { // Updated component name
         recommendationPercentage: number;
         ratingsDistribution: number[];
     }>(null);
+
+    const navigation = useNavigation<NavigationProp<any>>();
+
+    // Safely get the navigation state and handle undefined
+    const navigationState = navigation.getState ? navigation.getState() : undefined;
+
+    const previousRouteName = navigationState?.routes?.[navigationState.index - 1]?.name;
+
+    console.log('Previous Route Name:', previousRouteName);
 
     const [reviews, setReviews] = useState<{ review_id: number; review_date: string; review_rating: number; review_description: string; user_id: number; store_id: number; review_business_response: string; }[]>([]);
     const userId = 1; // Replace this with dynamic user ID retrieval, for now, it's a static ID for testing
@@ -38,17 +47,17 @@ export default function StoreDetailScreen() { // Updated component name
                     recommendationPercentage: foundStore.recommendationPercentage,
                     ratingsDistribution: foundStore.ratingsDistribution,
                 };
-            
+
                 setStore(mappedStore);
-            
+
                 const favStatus = isFavourite(userId.toString(), foundStore.store_id);
                 setIsFav(favStatus);
-            
+
                 // Fetch reviews for the store
                 const storeReviews = getReviewsByStoreId(foundStore.store_id);
                 setReviews(storeReviews);
             }
-            
+
         }, [id]) // This effect runs whenever the screen is focused or when the id changes
     );
 
@@ -75,8 +84,33 @@ export default function StoreDetailScreen() { // Updated component name
                     <Text style={styles.recommended}>Business Response: {item.review_business_response}</Text>
                 )}
             </View>
+    
+            {/* Add the Reply button */}
+            {previousRouteName === 'business' && (
+            <TouchableOpacity 
+                style={styles.replyButton} 
+                onPress={() => handleReply(item)} // Pass the review object to handleReply
+            >
+                <Text style={styles.replyButtonText}>Reply</Text>
+            </TouchableOpacity>
+            )}
         </View>
     );
+    
+
+    const handleReply = (review: any) => {
+        // Navigate to the reply screen, passing the review details
+        router.push({
+            pathname: "../businessPages/replyPage", // Correct path to replyPage
+            params: { 
+                reviewId: review.review_id, // Optionally still pass the reviewId if needed
+                userUsername: review.user_username, // Pass the username
+                reviewDescription: review.review_description, // Pass the review description
+            },
+        });
+    };
+    
+
 
     const getBarWidthPercentage = (count: number, total: number) => (count / total) * 100;
 
@@ -112,25 +146,29 @@ export default function StoreDetailScreen() { // Updated component name
                 </View>
             </View>
             {/* Add a button to write a review */}
-            <TouchableOpacity
-                style={styles.submitButton}
-                onPress={() => router.push({
-                    pathname: "../review/review",
-                    params: { storeId: store.id },
-                })}
-            >
-                <Text style={styles.submitButtonText}>Write a Review</Text>
-            </TouchableOpacity>
+            {previousRouteName === 'student' && (
+                <TouchableOpacity
+                    style={styles.submitButton}
+                    onPress={() => router.push({
+                        pathname: "../review/review",
+                        params: { storeId: store.id },
+                    })}
+                >
+                    <Text style={styles.submitButtonText}>Write a Review</Text>
+                </TouchableOpacity>
+            )}
 
-            {/* Add a button to add/remove from favourites */}
-            <TouchableOpacity
-                style={styles.favButton}
-                onPress={handleToggleFavourite}
-            >
-                <Text style={styles.submitButtonText}>
-                    {isFav ? 'Remove from Favourites' : 'Add to Favourites'}
-                </Text>
-            </TouchableOpacity>
+            {/* Conditionally render favourite button if the previous route is "student" */}
+            {previousRouteName === 'student' && (
+                <TouchableOpacity
+                    style={styles.favButton}
+                    onPress={handleToggleFavourite}
+                >
+                    <Text style={styles.submitButtonText}>
+                        {isFav ? 'Remove from Favourites' : 'Add to Favourites'}
+                    </Text>
+                </TouchableOpacity>
+            )}
         </View>
     );
 
@@ -282,5 +320,16 @@ const styles = StyleSheet.create({
         borderColor: '#000000',
         borderWidth: 1,
         marginTop: 10,
+    },
+    replyButton: {
+        backgroundColor: '#f0f0f0',
+        padding: 10,
+        borderRadius: 5,
+        marginTop: 10,
+    },
+    replyButtonText: {
+        color: '#007BFF',
+        textAlign: 'center',
+        fontWeight: 'bold',
     },
 });

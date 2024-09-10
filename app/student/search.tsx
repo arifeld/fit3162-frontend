@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, TextInput, View, Text, Image, FlatList, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { searchRestaurantsByName } from '../utils/tempDatabase';
-import Card from '../components/RestaurantCard';
+import Card from '../components/StoreCard';
 
 export default function Search() {
   const [searchQuery, setSearchQuery] = useState('');

@@ -1,35 +1,58 @@
 import React, { useState } from 'react';
-import { Link } from 'expo-router';
-import { StyleSheet, View, Text, SafeAreaView, Image, TextInput, TouchableOpacity } from 'react-native';
+import { useRouter } from 'expo-router';
+import { StyleSheet, View, Text, SafeAreaView, Image, TextInput, TouchableOpacity, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { getDatabase } from '../utils/tempDatabase'; // Import temp database
 
-export default function loginStudent() {
+export default function loginBusiness() {
+    const router = useRouter();
 
-    // State to manage form input values
     const [form, setForm] = useState({
         email: '',
         password: ''
-    })
+    });
 
-    // State to toggle password visibility
-    const [showPassword, setShowPassword] = useState(false); 
+    const [showPassword, setShowPassword] = useState(false);
+
+    const handleLogin = () => {
+        const { email, password } = form;
+        const { users, businesses } = getDatabase();
     
+        // Simulate authentication by checking against tempDatabase
+        const user = users.find(u => u.user_email === email && u.user_password === password);
+    
+        if (user) {
+            // Find the business associated with this user (owner)
+            const business = businesses.find(b => b.owner_id === user.user_id);
+    
+            if (business) {
+                // Navigate to BusinessHome and pass the businessId as a route param
+                router.replace({
+                    pathname: '/business/businessHome',
+                    params: { businessId: business.business_id },
+                });
+            } else {
+                Alert.alert('Error', 'No business found for this user.');
+            }
+        } else {
+            Alert.alert('Error', 'Invalid email or password.');
+        }
+    };
+    
+    
+
     return (
-        <SafeAreaView style={{flex: 1}}>
+        <SafeAreaView style={{ flex: 1 }}>
             <View style={styles.container}>
-                {/* Header section with logo and title */}
                 <View style={styles.header}>
-                    <Image 
-                        source={require('../assets/images/monash-logo.png')} 
+                    <Image
+                        source={require('../assets/images/monash-logo.png')}
                         style={styles.monashLogo}
                     />
-
                     <Text style={styles.title}>Welcome Back</Text>
                 </View>
 
-                {/* Form section for user input */}
                 <View style={styles.form}>
-                    {/* Email input field */}
                     <View style={styles.input}>
                         <TextInput
                             autoCapitalize='none'
@@ -39,11 +62,10 @@ export default function loginStudent() {
                             placeholder='Business Email'
                             placeholderTextColor='#6b7280'
                             value={form.email}
-                            onChangeText={email => setForm({...form, email})}
+                            onChangeText={email => setForm({ ...form, email })}
                         />
                     </View>
 
-                    {/* Password input field with show/hide functionality */}
                     <View style={styles.input}>
                         <View style={styles.passwordContainer}>
                             <TextInput
@@ -51,48 +73,37 @@ export default function loginStudent() {
                                 placeholder='Password'
                                 placeholderTextColor='#6b7280'
                                 value={form.password}
-                                onChangeText={password => setForm({...form, password})}
-                                secureTextEntry={!showPassword} // Toggle password visibility
+                                onChangeText={password => setForm({ ...form, password })}
+                                secureTextEntry={!showPassword}
                             />
                             <TouchableOpacity
-                                onPress={() => setShowPassword(!showPassword)} // Toggle the showPassword state
+                                onPress={() => setShowPassword(!showPassword)}
                                 style={styles.eyeIcon}
                             >
-                                <Icon 
-                                    name={showPassword ? 'eye-off' : 'eye'} 
-                                    size={20} 
-                                    color='#6b7280' 
+                                <Icon
+                                    name={showPassword ? 'eye-off' : 'eye'}
+                                    size={20}
+                                    color='#6b7280'
                                 />
                             </TouchableOpacity>
                         </View>
                     </View>
 
-                    {/* Forgot Password */}
-                    <View style={styles.forgotPasswordContainer}>
-                        <Link href={`/authentication/forgotPassword`}>
-                            <Text style={styles.forgotPassword}>Forgot Password?</Text>
-                        </Link>
-                    </View>
-
-                    {/* Sign In button */}
                     <View style={styles.formAction}>
-                        <TouchableOpacity
-                            onPress={() => {
-                                // awaiting backend
-                            }}>
+                        <TouchableOpacity onPress={handleLogin}>
                             <View style={styles.btn}>
                                 <Text style={styles.btnText}>Sign in</Text>
                             </View>
                         </TouchableOpacity>
                     </View>
-                </View>
 
-                {/* Footer section with sign-up link */}
-                <View style={styles.footer}>
-                    <Text style={styles.footerText}>Don't have an account?</Text>
-                    <Link style={ {marginLeft: 6} } href={`/authentication/signupStudent`}>
-                        <Text style={styles.signUpText}>Sign Up</Text>
-                    </Link>
+                    <View style={styles.formAction}>
+                        <TouchableOpacity onPress={() => router.replace('/authentication/loginStudent')}>
+                            <View style={[styles.btn]}>
+                                <Text style={styles.btnText}>Back to Student Login</Text>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
                 </View>
             </View>
         </SafeAreaView>
@@ -100,6 +111,7 @@ export default function loginStudent() {
 }
 
 const styles = StyleSheet.create({
+    // Same styles as before...
     container: {
         flex: 1,
         paddingTop: 10,
@@ -130,7 +142,6 @@ const styles = StyleSheet.create({
         fontSize: 17,
         fontWeight: '600',
         marginBottom: 8
-
     },
     inputControl: {
         backgroundColor: 'white',
@@ -172,6 +183,9 @@ const styles = StyleSheet.create({
         color: 'white',
         textTransform: 'uppercase'
     },
+    backBtn: {
+        backgroundColor: '#6b7280', // Different color for the back button
+    },
     footer: {
         flexDirection: 'row',
         justifyContent: 'center',
@@ -194,11 +208,4 @@ const styles = StyleSheet.create({
         height: 55,
         borderRadius: 5,
     },
-    forgotPassword: {
-        color: 'grey', 
-    },
-    forgotPasswordContainer: {
-        alignSelf: 'flex-end',
-        marginTop: -7
-    },
-})
+});
