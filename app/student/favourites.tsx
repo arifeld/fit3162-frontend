@@ -5,7 +5,12 @@ import Card from '../components/StoreCard';
 import { getFavourites } from '../utils/tempDatabase';
 
 export default function Favourites() {
-  const [favouriteRestaurants, setFavouriteRestaurants] = useState<{ name: string; description: string; rating: number; image: any; id: number; }[]>([]);
+  const [favouriteRestaurants, setFavouriteRestaurants] = useState<{ 
+    store_id: number;
+    store_name: string;
+    store_description: string;
+    rating: number;
+    image: any; }[]>([]);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -19,7 +24,7 @@ export default function Favourites() {
     <View style={styles.outerContainer}>
       <FlatList
         data={favouriteRestaurants}
-        keyExtractor={(restaurant) => restaurant.id.toString()}
+        keyExtractor={(store) => store.store_id.toString()}
         renderItem={({ item }) => <Card info={item} />}
         contentContainerStyle={styles.container} // Style to wrap list content
       />
