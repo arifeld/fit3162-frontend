@@ -1,15 +1,27 @@
 import React, { useState } from 'react';
-import { Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import { StyleSheet, View, Text, SafeAreaView, Image, TextInput, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useLayoutEffect } from 'react';
+import { useNavigation } from '@react-navigation/native';
+
 
 export default function loginStudent() {
+    const router = useRouter(); // Initialize useRouter
+
+    const navigation = useNavigation();
+
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            headerShown: false, // Hides the navigation bar
+        });
+    }, [navigation]);
 
     // State to manage form input values
     const [form, setForm] = useState({
         email: '',
         password: ''
-    })
+    });
 
     // State to toggle password visibility
     const [showPassword, setShowPassword] = useState(false); 
@@ -23,7 +35,6 @@ export default function loginStudent() {
                         source={require('../assets/images/monash-logo.png')} 
                         style={styles.monashLogo}
                     />
-
                     <Text style={styles.title}>Welcome Back</Text>
                 </View>
 
@@ -69,19 +80,28 @@ export default function loginStudent() {
 
                     {/* Forgot Password */}
                     <View style={styles.forgotPasswordContainer}>
-                        <Link href={`/authentication/forgotPassword`}>
+                        <TouchableOpacity onPress={() => router.push('/authentication/forgotPassword')}>
                             <Text style={styles.forgotPassword}>Forgot Password?</Text>
-                        </Link>
+                        </TouchableOpacity>
                     </View>
 
                     {/* Sign In button */}
                     <View style={styles.formAction}>
-                        <TouchableOpacity
-                            onPress={() => {
-                                // awaiting backend
-                            }}>
+                        <TouchableOpacity   
+                            //go to home for now
+                            onPress={() => router.replace('/student/home')}>
                             <View style={styles.btn}>
                                 <Text style={styles.btnText}>Sign in</Text>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+
+                    {/* Business Sign In button */}
+                    <View style={styles.formAction}>
+                        <TouchableOpacity
+                            onPress={() => router.replace('/authentication/loginBusiness')}>
+                            <View style={styles.btn}>
+                                <Text style={styles.btnText}>Business Sign in</Text>
                             </View>
                         </TouchableOpacity>
                     </View>
@@ -90,14 +110,15 @@ export default function loginStudent() {
                 {/* Footer section with sign-up link */}
                 <View style={styles.footer}>
                     <Text style={styles.footerText}>Don't have an account?</Text>
-                    <Link style={ {marginLeft: 6} } href={`/authentication/signupStudent`}>
+                    <TouchableOpacity onPress={() => router.push('/authentication/signupStudent')}>
                         <Text style={styles.signUpText}>Sign Up</Text>
-                    </Link>
+                    </TouchableOpacity>
                 </View>
             </View>
         </SafeAreaView>
     );
 }
+
 
 const styles = StyleSheet.create({
     container: {
@@ -195,7 +216,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
     },
     forgotPassword: {
-        color: 'grey', 
+        color: 'grey',
     },
     forgotPasswordContainer: {
         alignSelf: 'flex-end',
