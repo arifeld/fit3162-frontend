@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 
 export default function BusinessSettings() {
     const { userType } = useLocalSearchParams(); // Retrieve the user type and lastLogin parameters
@@ -30,8 +30,13 @@ export default function BusinessSettings() {
                     <TouchableOpacity style={styles.settingItem}>
                         <Text style={styles.settingText}>Give feedback</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.settingItem}>
-                        <Text style={styles.settingText}>Manage Shops</Text>
+                    {/*go to manage shops page, once clicked*/}
+                    <TouchableOpacity style={styles.settingItem}
+                        onPress={handleToggleManageStore}
+                        >
+                        <Text 
+                        style={styles.settingText}>Manage Shops
+                        </Text>
                     </TouchableOpacity>
                 </View>
 
@@ -43,6 +48,12 @@ export default function BusinessSettings() {
         </SafeAreaView>
     );
 }
+
+const handleToggleManageStore = () => {
+    // Navigate to the manage shops page
+    router.push('../businessPages/manageStorePage');
+}
+
 
 const styles = StyleSheet.create({
     container: {

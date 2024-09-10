@@ -101,7 +101,7 @@ export default function StoreDetailScreen() { // Updated component name
     const handleReply = (review: any) => {
         // Navigate to the reply screen, passing the review details
         router.push({
-            pathname: "/business/replyPage", // Correct path to replyPage
+            pathname: "../businessPages/replyPage", // Correct path to replyPage
             params: { 
                 reviewId: review.review_id, // Optionally still pass the reviewId if needed
                 userUsername: review.user_username, // Pass the username

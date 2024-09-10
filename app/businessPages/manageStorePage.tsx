@@ -5,7 +5,7 @@ import { getStores } from '../utils/tempDatabase';
 import { useLayoutEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 
-export default function Home() {
+export default function ManageStorePage() {
   const [stores, setStores] = useState(getStores());
   const [refreshing, setRefreshing] = useState(false);
 
