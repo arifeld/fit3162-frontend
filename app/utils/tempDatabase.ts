@@ -171,15 +171,31 @@ export const getRestaurants = () => {
 };
 
 export const getReviewsByStoreId = (storeId: number) => {
-    return tempDatabase.reviews
-        .filter(review => review.store_id === storeId)
-        .map(review => {
-            const user = tempDatabase.users.find(user => user.user_id === review.user_id);
-            return {
-                ...review,
-                user_username: user ? user.user_username : 'Unknown User',
-            };
-        });
+
+    const url = process.env.EXPO_PUBLIC_API_URL;
+
+    fetch(`${url}/review/${storeId}`)
+    .then(response => {
+        if(!response.ok){
+            console.log(response);
+        }
+        return response.json();
+    })
+    .then(data => console.log(data))
+    .catch(error => console.error('There was a problem with the fetching data', error));
+
+
+
+
+    // return tempDatabase.reviews
+    //     .filter(review => review.store_id === storeId)
+    //     .map(review => {
+    //         const user = tempDatabase.users.find(user => user.user_id === review.user_id);
+    //         return {
+    //             ...review,
+    //             user_username: user ? user.user_username : 'Unknown User',
+    //         };
+    //     });
 };
 
 export const searchRestaurantsByName = (query: string) => {
@@ -206,20 +222,37 @@ export const isFavourite = (userId: string, storeId: number) => {
 };
 
 export const addReview = (storeId: number, userId: number, rating: number, description: string, recommend: boolean) => {
-    const newReviewId = tempDatabase.reviews.length + 1; // Simple auto-increment logic
+    // const newReviewId = tempDatabase.reviews.length + 1; // Simple auto-increment logic
     const newReview = {
-        review_id: newReviewId,
         review_date: new Date().toISOString().split('T')[0], // Today's date in 'YYYY-MM-DD' format
         review_rating: rating,
         review_description: description,
         user_id: userId,
         store_id: storeId,
         review_business_response: '', // Assuming no business response at creation
-        recommended: recommend,
     };
 
-    tempDatabase.reviews.push(newReview);
-    console.log('New Review Added:', newReview);
+    // tempDatabase.reviews.push(newReview);
+    // console.log('New Review Added:', newReview);
+
+    const url = process.env.EXPO_PUBLIC_API_URL;
+
+    fetch(`${url}/review`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(newReview)
+    })
+    .then(response => {
+        if(!response.ok){
+            console.log('Error:', response);
+        }
+        return response.json(); // Convert the response to JSON
+    })
+    .then(data => console.log('Success:', data)) 
+    .catch(error => console.error('Error:', error));  
+
 };
 
 

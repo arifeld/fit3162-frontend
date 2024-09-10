@@ -10,7 +10,7 @@ export default function WriteReviewScreen() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [anonymous, setAnonymous] = useState(false);
-  const [recommend, setRecommend] = useState(false);
+  const [recommend, setRecommend] = useState(true);
   const [images, setImages] = useState<Array<string>>([]);
 
   const userId = 1; // Replace with dynamic user ID
@@ -29,6 +29,8 @@ export default function WriteReviewScreen() {
       Alert.alert('Error', 'Please provide a rating and a description.');
       return;
     }
+
+    console.log("do something bitch")
 
     addReview(Number(restaurantId), userId, rating, description, recommend); // Add the review to the database
     Alert.alert('Success', 'Your review has been submitted!');

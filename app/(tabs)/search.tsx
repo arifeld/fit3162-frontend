@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, TextInput, View, Text, Image, FlatList, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { searchRestaurantsByName } from '../utils/tempDatabase';
+import { searchStoresByName } from '../utils/tempDatabase';
 import Card from '../components/RestaurantCard';
 
 export default function Search() {
@@ -11,7 +11,7 @@ export default function Search() {
   // Function to handle search input changes
   const handleSearchChange = (query: string) => {
     setSearchQuery(query);
-    const results = searchRestaurantsByName(query);
+    const results = searchStoresByName(query);
     setFilteredRestaurants(results);
   };
 
