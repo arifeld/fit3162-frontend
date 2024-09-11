@@ -38,7 +38,7 @@ export default function NearMe() {
             <Callout>
               <View style={styles.calloutContainer}>
                 <Link
-                  href={`/restaurant/${store.store_id}`}  // Use Link to navigate to the details page
+                  href={`/store/${store.store_id}`}  // Use Link to navigate to the details page
                   asChild
                 >
                   <TouchableOpacity>
