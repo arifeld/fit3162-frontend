@@ -1,4 +1,5 @@
 // app/tabs/profile.tsx
+import { useRouter } from 'expo-router';
 import React from 'react';
 import { 
   View, Text, StyleSheet, SafeAreaView, TouchableOpacity, Image, FlatList
@@ -25,6 +26,13 @@ export default function Setting() {
     </TouchableOpacity>
   );
 
+  const router = useRouter();
+
+  const handleLogout = () => {
+    // Any logout logic (e.g., clearing user session, tokens)
+    router.replace('/authentication/loginStudent'); // Navigate to login page
+  };
+
   return (
     <SafeAreaView style={styles.container}>
 
@@ -49,7 +57,7 @@ export default function Setting() {
       />
 
       {/* Logout button */}
-      <TouchableOpacity style={styles.logoutButton}>
+      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
         <Text style={styles.logoutText}>Log out</Text>
       </TouchableOpacity>
     </SafeAreaView>
