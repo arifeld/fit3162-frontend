@@ -269,7 +269,7 @@ export const editStore = (storeId: number, updatedStore: {
     store_name?: string;
     store_description?: string;
     rating?: number;
-    image?: any; // Adjust the type based on how you handle images
+    image?: any;
     business_id?: number;
     totalReviews?: number;
     recommendationPercentage?: number;

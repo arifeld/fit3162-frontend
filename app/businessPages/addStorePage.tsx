@@ -39,7 +39,6 @@ export default function AddStorePage() {
         longitude: 0, 
     };
 
-    // Call the addStore function from the database utility
     addStore(newStore);
 
     // Navigate back to ManageStorePage

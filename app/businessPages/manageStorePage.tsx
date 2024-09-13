@@ -43,8 +43,8 @@ export default function ManageStorePage() {
       [
         { text: "Cancel", style: "cancel" },
         { text: "OK", onPress: () => {
-          deleteStore(storeId); // Call the deleteStore function
-          setStores(getStores()); // Refresh the list of stores
+          deleteStore(storeId); 
+          setStores(getStores()); 
         }},
       ]
     );
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
   outerContainer: {
     flex: 1,
     backgroundColor: 'white',
-    paddingBottom: 20, // Ensure there's space for the Add Shop button
+    paddingBottom: 20, 
   },
   container: {
     marginTop: 50,
