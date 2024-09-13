@@ -51,7 +51,7 @@ export default function BusinessSettings() {
 
 const handleToggleManageStore = () => {
     // Navigate to the manage shops page
-    router.push('../businessPages/manageStorePage');
+    router.navigate('../businessPages/manageStorePage');
 }
 
 

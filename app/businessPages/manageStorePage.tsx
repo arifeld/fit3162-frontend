@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { StyleSheet, View, FlatList, Text, RefreshControl, TouchableOpacity, Image, Button } from 'react-native';
+import { StyleSheet, View, FlatList, Text, RefreshControl, TouchableOpacity, Image, Button, Alert } from 'react-native';
 import { getStores } from '../utils/tempDatabase';
 import { useLayoutEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
@@ -12,7 +12,7 @@ export default function ManageStorePage() {
 
   useLayoutEffect(() => {
       navigation.setOptions({
-          headerShown: false, // Hides the navigation bar
+          headerShown: true, // Hides the navigation bar
       });
   }, [navigation]);
 
@@ -31,8 +31,19 @@ export default function ManageStorePage() {
   };
 
   const handleDelete = (storeId: any) => {
-    // Handle Delete button press
-    console.log(`Delete store with ID: ${storeId}`);
+    Alert.alert(
+      "Delete Store",
+      "Are you sure you want to delete this store?",
+      [
+        { text: "Cancel", style: "cancel" },
+        { text: "OK", onPress: () => {
+          const updatedStores = stores.filter((store) => store.store_id !== storeId);
+          setStores(updatedStores);
+  
+          console.log(`Deleted store with ID: ${storeId}`);
+        }},
+      ]
+    );
   };
 
   const renderStoreItem = ({ item }: { item: any }) => (

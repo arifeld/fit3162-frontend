@@ -29,8 +29,7 @@ export default function Setting() {
   const router = useRouter();
 
   const handleLogout = () => {
-    // Any logout logic (e.g., clearing user session, tokens)
-    router.replace('/authentication/loginStudent'); // Navigate to login page
+    router.replace('/authentication/loginStudent');
   };
 
   return (
