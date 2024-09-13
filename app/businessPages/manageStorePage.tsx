@@ -1,10 +1,13 @@
 import React, { useState, useCallback } from 'react';
-import { StyleSheet, View, FlatList, Text, RefreshControl, TouchableOpacity, Image, Button } from 'react-native';
-import { getStores } from '../utils/tempDatabase';
+import { StyleSheet, View, FlatList, Text, RefreshControl, TouchableOpacity, Image, Button, Alert } from 'react-native';
+import { getStores, deleteStore } from '../utils/tempDatabase';
 import { useLayoutEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 
 export default function ManageStorePage() {
+  const router = useRouter();
+
   const [stores, setStores] = useState(getStores());
   const [refreshing, setRefreshing] = useState(false);
 
@@ -12,7 +15,7 @@ export default function ManageStorePage() {
 
   useLayoutEffect(() => {
       navigation.setOptions({
-          headerShown: false, // Hides the navigation bar
+          headerShown: true, // Hides the navigation bar
       });
   }, [navigation]);
 
@@ -26,13 +29,25 @@ export default function ManageStorePage() {
   }, []);
 
   const handleEdit = (storeId: any) => {
-    // Handle Edit button press
-    console.log(`Edit store with ID: ${storeId}`);
+    router.push('../businessPages/editStorePage');
   };
 
-  const handleDelete = (storeId: any) => {
-    // Handle Delete button press
-    console.log(`Delete store with ID: ${storeId}`);
+  const handleAdd = () => {
+    router.push('../businessPages/addStorePage');
+  };
+
+  const handleDelete = (storeId: number) => {
+    Alert.alert(
+      "Delete Store",
+      "Are you sure you want to delete this store?",
+      [
+        { text: "Cancel", style: "cancel" },
+        { text: "OK", onPress: () => {
+          deleteStore(storeId); 
+          setStores(getStores()); 
+        }},
+      ]
+    );
   };
 
   const renderStoreItem = ({ item }: { item: any }) => (
@@ -72,7 +87,7 @@ export default function ManageStorePage() {
         />
       )}
       {/* Add Shop button */}
-      <TouchableOpacity style={styles.addButton} onPress={() => console.log('Add Shop')}>
+      <TouchableOpacity style={styles.addButton} onPress={() => handleAdd()}>
         <Text style={styles.addButtonText}>Add Shop</Text>
       </TouchableOpacity>
     </View>
@@ -83,7 +98,7 @@ const styles = StyleSheet.create({
   outerContainer: {
     flex: 1,
     backgroundColor: 'white',
-    paddingBottom: 20, // Ensure there's space for the Add Shop button
+    paddingBottom: 20, 
   },
   container: {
     marginTop: 50,
