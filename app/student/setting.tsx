@@ -107,9 +107,11 @@ const styles = StyleSheet.create({
   },
   logoutButton: {
     marginTop: 20,
+    padding: 16,
+    alignItems: 'center',
   },
   logoutText: {
-    color: 'red',
-    fontSize: 16,
+      color: 'red',
+      fontSize: 16,
   },
 });

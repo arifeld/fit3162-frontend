@@ -1,9 +1,15 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
-import { router, useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams, useRouter } from 'expo-router';
 
 export default function BusinessSettings() {
     const { userType } = useLocalSearchParams(); // Retrieve the user type and lastLogin parameters
+
+    const router = useRouter();
+
+    const handleLogout = () => {
+      router.replace('/authentication/loginBusiness');
+    };
 
     return (
         <SafeAreaView style={styles.container}>
@@ -41,7 +47,7 @@ export default function BusinessSettings() {
                 </View>
 
                 {/* Log Out button */}
-                <TouchableOpacity style={styles.logoutButton}>
+                <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
                     <Text style={styles.logoutText}>Log out</Text>
                 </TouchableOpacity>
             </ScrollView>
@@ -51,7 +57,7 @@ export default function BusinessSettings() {
 
 const handleToggleManageStore = () => {
     // Navigate to the manage shops page
-    router.navigate('../businessPages/manageStorePage');
+    router.push('../businessPages/manageStorePage');
 }
 
 

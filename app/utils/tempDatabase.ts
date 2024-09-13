@@ -240,3 +240,73 @@ export const addReview = (storeId: number, userId: number, rating: number, descr
 
 export const getDatabase = () => tempDatabase;
 
+export const addStore = (newStore: {
+    store_name: string;
+    store_description: string;
+    rating: number;
+    image: any; 
+    business_id: number;
+    totalReviews: number;
+    recommendationPercentage: number;
+    ratingsDistribution: number[];
+    latitude: number;
+    longitude: number;
+}) => {
+    const storeIds = tempDatabase.stores.map(store => store.store_id);
+    const newStoreId = storeIds.length ? Math.max(...storeIds) + 1 : 1;
+
+    const addedStore = {
+        store_id: newStoreId,
+        ...newStore,
+    };
+
+    tempDatabase.stores.push(addedStore);
+    console.log('New Store Added:', addedStore);
+    return newStoreId;
+};
+
+export const editStore = (storeId: number, updatedStore: {
+    store_name?: string;
+    store_description?: string;
+    rating?: number;
+    image?: any; // Adjust the type based on how you handle images
+    business_id?: number;
+    totalReviews?: number;
+    recommendationPercentage?: number;
+    ratingsDistribution?: number[];
+    latitude?: number;
+    longitude?: number;
+}) => {
+    const storeIndex = tempDatabase.stores.findIndex(store => store.store_id === storeId);
+
+    if (storeIndex === -1) {
+        console.log('Store not found.');
+        return;
+    }
+
+    tempDatabase.stores[storeIndex] = {
+        ...tempDatabase.stores[storeIndex],
+        ...updatedStore,
+    };
+
+    console.log('Store Updated:', tempDatabase.stores[storeIndex]);
+};
+
+export const deleteStore = (storeId: number) => {
+    // Find the index of the store to be deleted
+    const storeIndex = tempDatabase.stores.findIndex(store => store.store_id === storeId);
+
+    if (storeIndex === -1) {
+        console.log('Store not found.');
+        return;
+    }
+
+    // Remove the store from the stores array
+    const [deletedStore] = tempDatabase.stores.splice(storeIndex, 1);
+
+    // Remove related reviews
+    tempDatabase.reviews = tempDatabase.reviews.filter(review => review.store_id !== storeId);
+
+    console.log('Store Deleted:', deletedStore);
+};
+
