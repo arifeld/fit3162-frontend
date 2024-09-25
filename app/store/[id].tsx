@@ -1,14 +1,14 @@
 import React, { useState, useCallback } from 'react';
 import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
+import { NavigationProp, useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { addToFavourites, removeFromFavourites, isFavourite, getRestaurants, getReviewsByStoreId } from '../utils/tempDatabase'; // Import necessary functions
+import { addToFavourites, removeFromFavourites, isFavourite, getStores, getReviewsByStoreId } from '../utils/tempDatabase'; // Updated function import to getStores
 import { router, useLocalSearchParams } from 'expo-router';
 
-export default function RestaurantDetailScreen() {
-    const { id } = useLocalSearchParams(); // Get the restaurant ID from the URL parameters
+export default function StoreDetailScreen() { // Updated component name
+    const { id } = useLocalSearchParams(); // Get the store ID from the URL parameters
     const [isFav, setIsFav] = useState(false);
-    const [restaurant, setRestaurant] = useState<null | {
+    const [store, setStore] = useState<null | {
         name: string;
         description: string;
         rating: number;
@@ -19,30 +19,52 @@ export default function RestaurantDetailScreen() {
         ratingsDistribution: number[];
     }>(null);
 
+    const navigation = useNavigation<NavigationProp<any>>();
+
+    // Safely get the navigation state and handle undefined
+    const navigationState = navigation.getState ? navigation.getState() : undefined;
+
+    const previousRouteName = navigationState?.routes?.[navigationState.index - 1]?.name;
+
+    console.log('Previous Route Name:', previousRouteName);
+
     const [reviews, setReviews] = useState<{ review_id: number; review_date: string; review_rating: number; review_description: string; user_id: number; store_id: number; review_business_response: string; }[]>([]);
     const userId = 1; // Replace this with dynamic user ID retrieval, for now, it's a static ID for testing
 
     useFocusEffect(
         useCallback(() => {
-            const restaurants = getRestaurants(); // Get the array of restaurants
-            const foundRestaurant = restaurants.find((item) => item.id.toString() === id); // Find the restaurant by ID
+            const stores = getStores(); // Get the array of stores
+            const foundStore = stores.find((item) => item.store_id.toString() === id); // Find the store by ID
 
-            if (foundRestaurant) {
-                setRestaurant(foundRestaurant);
-                const favStatus = isFavourite(userId.toString(), foundRestaurant.id);
+            if (foundStore) {
+                const mappedStore = {
+                    name: foundStore.store_name,
+                    description: foundStore.store_description,
+                    rating: foundStore.rating,
+                    image: foundStore.image,
+                    id: foundStore.store_id,
+                    totalReviews: foundStore.totalReviews,
+                    recommendationPercentage: foundStore.recommendationPercentage,
+                    ratingsDistribution: foundStore.ratingsDistribution,
+                };
+
+                setStore(mappedStore);
+
+                const favStatus = isFavourite(userId.toString(), foundStore.store_id);
                 setIsFav(favStatus);
 
-                // Fetch reviews for the restaurant
-                const restaurantReviews = getReviewsByStoreId(foundRestaurant.id);
-                setReviews(restaurantReviews);
+                // Fetch reviews for the store
+                const storeReviews = getReviewsByStoreId(foundStore.store_id);
+                setReviews(storeReviews);
             }
+
         }, [id]) // This effect runs whenever the screen is focused or when the id changes
     );
 
-    if (!restaurant) {
+    if (!store) {
         return (
             <View style={styles.container}>
-                <Text style={styles.title}>Restaurant not found</Text>
+                <Text style={styles.title}>Store not found</Text>
             </View>
         );
     }
@@ -62,29 +84,54 @@ export default function RestaurantDetailScreen() {
                     <Text style={styles.recommended}>Business Response: {item.review_business_response}</Text>
                 )}
             </View>
+    
+            {/* Add the Reply button */}
+            {previousRouteName === 'business' && (
+            <TouchableOpacity 
+                style={styles.replyButton} 
+                onPress={() => handleReply(item)} // Pass the review object to handleReply
+            >
+                <Text style={styles.replyButtonText}>Reply</Text>
+            </TouchableOpacity>
+            )}
         </View>
     );
+    
+
+    const handleReply = (review: any) => {
+        // Navigate to the reply screen, passing the review details
+        router.push({
+            pathname: "../businessPages/replyPage", // Correct path to replyPage
+            params: { 
+                reviewId: review.review_id, // Optionally still pass the reviewId if needed
+                userUsername: review.user_username, // Pass the username
+                reviewDescription: review.review_description, // Pass the review description
+            },
+        });
+    };
+    
+
 
     const getBarWidthPercentage = (count: number, total: number) => (count / total) * 100;
 
     const renderHeader = () => (
         <View>
-            <Image style={styles.image} source={restaurant.image} />
-            <Text style={styles.title}>{restaurant.name}</Text>
-            <Text style={styles.description}>{restaurant.description}</Text>
-            <Text style={styles.rating}>Rating: {restaurant.rating}</Text>
+            <Image style={styles.image} source={store.image} />
+            <Text style={styles.title}>{store.name}</Text>
+            <Text style={styles.description}>{store.description}</Text>
+            <Text style={styles.rating}>Rating: {store.rating}</Text>
             <View style={styles.summaryContainer}>
-                <Text style={styles.summaryTitle}>Ratings & Reviews ({restaurant.totalReviews})</Text>
+                <Text style={styles.summaryTitle}>Ratings & Reviews ({store.totalReviews})</Text>
                 <View style={styles.summaryContent}>
                     <View>
-                        {restaurant.ratingsDistribution.map((count, index) => (
+                        {store.ratingsDistribution.map((count, index) => (
                             <View key={index} style={styles.ratingRow}>
                                 <Text>{5 - index}</Text>
                                 <View style={styles.ratingBarContainer}>
                                     <View
                                         style={[
                                             styles.ratingBar,
-                                            { width: `${getBarWidthPercentage(count, restaurant.totalReviews)}%` },
+                                            { width: `${getBarWidthPercentage(count, store.totalReviews)}%` },
                                         ]}
                                     />
                                 </View>
@@ -92,42 +139,46 @@ export default function RestaurantDetailScreen() {
                         ))}
                     </View>
                     <View>
-                        <Text style={styles.overallRating}>{restaurant.rating.toFixed(1)}</Text>
-                        <Text>{restaurant.totalReviews} Reviews</Text>
-                        <Text>{restaurant.recommendationPercentage}% Recommended</Text>
+                        <Text style={styles.overallRating}>{store.rating.toFixed(1)}</Text>
+                        <Text>{store.totalReviews} Reviews</Text>
+                        <Text>{store.recommendationPercentage}% Recommended</Text>
                     </View>
                 </View>
             </View>
             {/* Add a button to write a review */}
-            <TouchableOpacity
-                style={styles.submitButton}
-                onPress={() => router.push({
-                    pathname: "../review/review",
-                    params: { restaurantId: restaurant.id },
-                })}
-            >
-                <Text style={styles.submitButtonText}>Write a Review</Text>
-            </TouchableOpacity>
+            {previousRouteName === 'student' && (
+                <TouchableOpacity
+                    style={styles.submitButton}
+                    onPress={() => router.push({
+                        pathname: "../review/review",
+                        params: { storeId: store.id },
+                    })}
+                >
+                    <Text style={styles.submitButtonText}>Write a Review</Text>
+                </TouchableOpacity>
+            )}
 
-            {/* Add a button to add/remove from favourites */}
-            <TouchableOpacity
-                style={styles.favButton}
-                onPress={handleToggleFavourite}
-            >
-                <Text style={styles.submitButtonText}>
-                    {isFav ? 'Remove from Favourites' : 'Add to Favourites'}
-                </Text>
-            </TouchableOpacity>
+            {/* Conditionally render favourite button if the previous route is "student" */}
+            {previousRouteName === 'student' && (
+                <TouchableOpacity
+                    style={styles.favButton}
+                    onPress={handleToggleFavourite}
+                >
+                    <Text style={styles.submitButtonText}>
+                        {isFav ? 'Remove from Favourites' : 'Add to Favourites'}
+                    </Text>
+                </TouchableOpacity>
+            )}
         </View>
     );
 
     const handleToggleFavourite = () => {
         if (isFav) {
-            removeFromFavourites(userId.toString(), restaurant.id);
-            Alert.alert('Removed from Favourites', `Store ID ${restaurant.id} has been removed from your favourites.`);
+            removeFromFavourites(userId.toString(), store.id);
+            Alert.alert('Removed from Favourites', `Store ID ${store.id} has been removed from your favourites.`);
         } else {
-            addToFavourites(userId.toString(), restaurant.id);
-            Alert.alert('Added to Favourites', `Store ID ${restaurant.id} has been added to your favourites.`);
+            addToFavourites(userId.toString(), store.id);
+            Alert.alert('Added to Favourites', `Store ID ${store.id} has been added to your favourites.`);
         }
         setIsFav(!isFav); // Toggle favourite state
     };
@@ -269,5 +320,16 @@ const styles = StyleSheet.create({
         borderColor: '#000000',
         borderWidth: 1,
         marginTop: 10,
+    },
+    replyButton: {
+        backgroundColor: '#f0f0f0',
+        padding: 10,
+        borderRadius: 5,
+        marginTop: 10,
+    },
+    replyButtonText: {
+        color: '#007BFF',
+        textAlign: 'center',
+        fontWeight: 'bold',
     },
 });

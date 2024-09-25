@@ -11,8 +11,8 @@ const tempDatabase = {
         },
         {
             user_id: 2,
-            user_email: 'john@example.com',
-            user_password: 'password123',
+            user_email: '1',
+            user_password: '1',
             user_username: 'John Doe',
         },
         {
@@ -40,36 +40,61 @@ const tempDatabase = {
             user_username: 'Dan Green',
         },
     ],
-    restaurants: [
+    businesses: [
         {
-            name: 'Guzman Y Gomez',
-            description: 'Specialises in Mexican cuisine with burritos, nachos, tacos, quesadillas and other Mexican-inspired items available.',
+            business_id: 1,
+            business_name: 'Global Foods Inc.',
+            business_contact_email: 'contact@globalfoods.com',
+            business_contact_phone: '+1234567890',
+            owner_id: 1, // Assuming user with user_id 1 is the owner
+        },
+        {
+            business_id: 2,
+            business_name: 'Healthy Beverages Ltd.',
+            business_contact_email: 'info@healthybeverages.com',
+            business_contact_phone: '+0987654321',
+            owner_id: 2, // Assuming user with user_id 2 is the owner
+        },
+    ],
+    stores: [
+        {
+            store_id: 1,
+            store_name: 'Guzman Y Gomez',
+            store_description: 'Specialises in Mexican cuisine with burritos, nachos, tacos, quesadillas and other Mexican-inspired items available.',
             rating: 4.5,
             image: require('../assets/images/guzman.png'),
-            id: 1,
+            business_id: 1, // Owned by 'Global Foods Inc.'
             totalReviews: 273,
             recommendationPercentage: 88,
             ratingsDistribution: [180, 60, 20, 10, 3],
+            latitude: -37.8136,  // Example latitude
+            longitude: 144.9631, // Example longitude
         },
         {
-            name: 'Sushi Sushi',
-            description: 'At Sushi Sushi we see the creation of fresh, healthy sushi as way more than a job; it is an obsession.',
+            store_id: 2,
+            store_name: 'Sushi Sushi',
+            store_description: 'At Sushi Sushi we see the creation of fresh, healthy sushi as way more than a job; it is an obsession.',
             rating: 4.7,
             image: require('../assets/images/sushi-sushi.jpg'),
-            id: 2,
+            business_id: 1, // Owned by 'Global Foods Inc.'
             totalReviews: 150,
             recommendationPercentage: 90,
             ratingsDistribution: [120, 20, 5, 3, 2],
+            latitude: -37.8156,
+            longitude: 144.9651,
         },
         {
-            name: 'Boost',
-            description: 'Boost offers a range of healthy smoothies and freshly squeezed juices made to order, with a variety of dairy-free and gluten-free options.',
+            store_id: 3,
+            store_name: 'Boost',
+            store_description: 'Boost offers a range of healthy smoothies and freshly squeezed juices made to order, with a variety of dairy-free and gluten-free options.',
             rating: 5.0,
             image: require('../assets/images/boost-juice.png'),
-            id: 3,
+            business_id: 2, // Owned by 'Healthy Beverages Ltd.'
             totalReviews: 320,
             recommendationPercentage: 95,
             ratingsDistribution: [280, 30, 5, 3, 2],
+            latitude: -37.8126,
+            longitude: 144.9611,
         },
     ],
     reviews: [
@@ -130,6 +155,12 @@ const tempDatabase = {
     ],
 };
 
+// Functions to interact with the temp database
+
+export const getStoresByBusiness = (businessId: number) => {
+    return tempDatabase.stores.filter(store => store.business_id === businessId);
+};
+
 export const addToFavourites = (userId: string, storeId: number) => {
     const userFavouriteId = Math.random().toString(36).substr(2, 9);
     tempDatabase.userFavourites.push({
@@ -142,32 +173,17 @@ export const addToFavourites = (userId: string, storeId: number) => {
 };
 
 export const getFavourites = (userId: string) => {
-    // Fetch all favorites for the given user
     const favouriteStoreIds = tempDatabase.userFavourites
         .filter(fav => fav.userId === userId)
         .map(fav => fav.storeId);
 
-    // Return the full restaurant details of the user's favorite stores
-    return tempDatabase.restaurants.filter(restaurant =>
-        favouriteStoreIds.includes(restaurant.id)
+    return tempDatabase.stores.filter(store =>
+        favouriteStoreIds.includes(store.store_id)
     );
 };
 
-export const getRestaurants = () => {
-    
-    const url = process.env.EXPO_PUBLIC_API_URL;
-
-    fetch(`${url}/store`)
-    .then(response => {
-        if (!response.ok) {
-            console.log(response);
-        }
-        return response.json();
-    })
-    .then(data => console.log(data))
-    .catch(error => console.error('There was a problem with the fetching data', error));
-
-    return tempDatabase.restaurants;
+export const getStores = () => {
+    return tempDatabase.stores; // This now returns stores instead of restaurants
 };
 
 export const getReviewsByStoreId = (storeId: number) => {
@@ -198,13 +214,13 @@ export const getReviewsByStoreId = (storeId: number) => {
     //     });
 };
 
-export const searchRestaurantsByName = (query: string) => {
+export const searchStoresByName = (query: string) => {
     if (!query) {
-        return getRestaurants();
+        return getStores();
     }
 
-    return tempDatabase.restaurants.filter(restaurant =>
-        restaurant.name.toLowerCase().includes(query.toLowerCase())
+    return tempDatabase.stores.filter(store =>
+        store.store_name.toLowerCase().includes(query.toLowerCase())
     );
 };
 
@@ -224,12 +240,12 @@ export const isFavourite = (userId: string, storeId: number) => {
 export const addReview = (storeId: number, userId: number, rating: number, description: string, recommend: boolean) => {
     // const newReviewId = tempDatabase.reviews.length + 1; // Simple auto-increment logic
     const newReview = {
-        review_date: new Date().toISOString().split('T')[0], // Today's date in 'YYYY-MM-DD' format
+        review_date: new Date().toISOString().split('T')[0],
         review_rating: rating,
         review_description: description,
         user_id: userId,
         store_id: storeId,
-        review_business_response: '', // Assuming no business response at creation
+        review_business_response: '',
     };
 
     // tempDatabase.reviews.push(newReview);
@@ -255,5 +271,75 @@ export const addReview = (storeId: number, userId: number, rating: number, descr
 
 };
 
-
 export const getDatabase = () => tempDatabase;
+
+export const addStore = (newStore: {
+    store_name: string;
+    store_description: string;
+    rating: number;
+    image: any; 
+    business_id: number;
+    totalReviews: number;
+    recommendationPercentage: number;
+    ratingsDistribution: number[];
+    latitude: number;
+    longitude: number;
+}) => {
+    const storeIds = tempDatabase.stores.map(store => store.store_id);
+    const newStoreId = storeIds.length ? Math.max(...storeIds) + 1 : 1;
+
+    const addedStore = {
+        store_id: newStoreId,
+        ...newStore,
+    };
+
+    tempDatabase.stores.push(addedStore);
+    console.log('New Store Added:', addedStore);
+    return newStoreId;
+};
+
+export const editStore = (storeId: number, updatedStore: {
+    store_name?: string;
+    store_description?: string;
+    rating?: number;
+    image?: any;
+    business_id?: number;
+    totalReviews?: number;
+    recommendationPercentage?: number;
+    ratingsDistribution?: number[];
+    latitude?: number;
+    longitude?: number;
+}) => {
+    const storeIndex = tempDatabase.stores.findIndex(store => store.store_id === storeId);
+
+    if (storeIndex === -1) {
+        console.log('Store not found.');
+        return;
+    }
+
+    tempDatabase.stores[storeIndex] = {
+        ...tempDatabase.stores[storeIndex],
+        ...updatedStore,
+    };
+
+    console.log('Store Updated:', tempDatabase.stores[storeIndex]);
+};
+
+export const deleteStore = (storeId: number) => {
+    // Find the index of the store to be deleted
+    const storeIndex = tempDatabase.stores.findIndex(store => store.store_id === storeId);
+
+    if (storeIndex === -1) {
+        console.log('Store not found.');
+        return;
+    }
+
+    // Remove the store from the stores array
+    const [deletedStore] = tempDatabase.stores.splice(storeIndex, 1);
+
+    // Remove related reviews
+    tempDatabase.reviews = tempDatabase.reviews.filter(review => review.store_id !== storeId);
+
+    console.log('Store Deleted:', deletedStore);
+};
+
