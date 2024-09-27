@@ -292,6 +292,15 @@ export const editStore = (storeId: number, updatedStore: {
     console.log('Store Updated:', tempDatabase.stores[storeIndex]);
 };
 
+export const getStoreById = (storeId: number) => {
+    const store = tempDatabase.stores.find((store) => store.store_id === storeId);
+    if (!store) {
+      console.log('Store not found.');
+      return null;
+    }
+    return store;
+  };
+
 export const deleteStore = (storeId: number) => {
     // Find the index of the store to be deleted
     const storeIndex = tempDatabase.stores.findIndex(store => store.store_id === storeId);

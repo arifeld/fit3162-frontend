@@ -1,12 +1,12 @@
 import React, { useState, useCallback } from 'react';
-import { StyleSheet, View, FlatList, Text, RefreshControl, TouchableOpacity, Image, Button, Alert } from 'react-native';
+import { StyleSheet, View, FlatList, Text, RefreshControl, TouchableOpacity, Image, Alert } from 'react-native';
 import { getStores, deleteStore } from '../utils/tempDatabase';
 import { useLayoutEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
 
 export default function ManageStorePage() {
-  const router = useRouter();
+  const router = useRouter(); // Use the router to navigate
 
   const [stores, setStores] = useState(getStores());
   const [refreshing, setRefreshing] = useState(false);
@@ -14,26 +14,30 @@ export default function ManageStorePage() {
   const navigation = useNavigation();
 
   useLayoutEffect(() => {
-      navigation.setOptions({
-          headerShown: true, // Hides the navigation bar
-      });
+    navigation.setOptions({
+      headerShown: true,
+    });
   }, [navigation]);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    // Simulate a network request to refresh data
     setTimeout(() => {
-      setStores(getStores()); // Update with new data
+      setStores(getStores());
       setRefreshing(false);
     }, 2000);
   }, []);
 
-  const handleEdit = (storeId: any) => {
-    router.push('../businessPages/editStorePage');
+  // Handle the navigation to the EditStorePage
+  const handleEdit = (storeId: number) => {
+    // Navigate to EditStorePage and pass storeId as a query parameter
+    router.push({
+      pathname: '/businessPages/editStorePage',
+      params: { storeId: storeId.toString() }, // Ensure storeId is passed as a string
+    });
   };
 
   const handleAdd = () => {
-    router.push('../businessPages/addStorePage');
+    router.push('/businessPages/addStorePage'); // Navigate to the AddStorePage
   };
 
   const handleDelete = (storeId: number) => {
@@ -42,10 +46,12 @@ export default function ManageStorePage() {
       "Are you sure you want to delete this store?",
       [
         { text: "Cancel", style: "cancel" },
-        { text: "OK", onPress: () => {
-          deleteStore(storeId); 
-          setStores(getStores()); 
-        }},
+        {
+          text: "OK", onPress: () => {
+            deleteStore(storeId);
+            setStores(getStores());
+          }
+        },
       ]
     );
   };
@@ -86,8 +92,7 @@ export default function ManageStorePage() {
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         />
       )}
-      {/* Add Shop button */}
-      <TouchableOpacity style={styles.addButton} onPress={() => handleAdd()}>
+      <TouchableOpacity style={styles.addButton} onPress={handleAdd}>
         <Text style={styles.addButtonText}>Add Shop</Text>
       </TouchableOpacity>
     </View>
@@ -98,7 +103,7 @@ const styles = StyleSheet.create({
   outerContainer: {
     flex: 1,
     backgroundColor: 'white',
-    paddingBottom: 20, 
+    paddingBottom: 20,
   },
   container: {
     marginTop: 50,
