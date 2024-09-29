@@ -62,12 +62,14 @@ export default function StoreDetailScreen() { // Updated component name
                     recommendationPercentage: (recommendationCount / reviews.length) * 100 , //store.recommendationPercentage,
                     ratingsDistribution: distribution || [0, 0, 0, 0, 0], //store.ratingsDistribution,
                 };
-
+    
                 setStore(mappedStore);
+
+                navigation.setOptions({ title: mappedStore.name });
 
                 const favStatus = isFavourite(userId.toString(), store.store_id);
                 setIsFav(favStatus);
-
+    
                 // Fetch reviews for the store
                 //const storeReviews = getReviewsByStoreId(store.store_id);
                 setReviews(reviews);
@@ -77,6 +79,7 @@ export default function StoreDetailScreen() { // Updated component name
             getData();
         }, [id]) // This effect runs whenever the screen is focused or when the id changes
     );
+    
 
     if (!store) {
         return (
