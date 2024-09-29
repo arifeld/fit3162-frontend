@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, SafeAreaView, Image, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, SafeAreaView, Image, TextInput, TouchableOpacity, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { createUser } from '../api/userLogin';
 
 export default function signupStudent() {
 
@@ -13,6 +14,26 @@ export default function signupStudent() {
 
     // State to toggle password visibility
     const [showPassword, setShowPassword] = useState(false); 
+
+    // Function to handle user signup
+    const handleSignUp = async () => {
+        console.log("passed to handleSignup");
+        console.log(form);
+        try {
+            // Call the createUser API
+            const response = await createUser(form.email, form.password, form.name);
+            if (response.status === 201) {
+                Alert.alert("Success", "User created successfully!");
+                // Handle navigation or additional logic here after successful signup
+            } else {
+                Alert.alert("Error", "Failed to sign up.");
+            }
+        } catch (error) {
+            console.error("Error during signup:", error);
+            Alert.alert("Error", "Something went wrong during signup.");
+        }
+    };
+
 
     return ( 
     <SafeAreaView style={{flex: 1}}>
@@ -82,9 +103,7 @@ export default function signupStudent() {
                 {/* Sign Up button */}
                 <View style={styles.formAction}>
                     <TouchableOpacity
-                        onPress={() => {
-                            // awaiting backend
-                        }}>
+                        onPress={handleSignUp}>
                         <View style={styles.btn}>
                             <Text style={styles.btnText}>Sign up</Text>
                         </View>
