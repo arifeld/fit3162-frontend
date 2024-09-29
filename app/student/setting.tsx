@@ -1,32 +1,38 @@
-// app/tabs/profile.tsx
 import { useRouter } from 'expo-router';
 import React from 'react';
 import { 
   View, Text, StyleSheet, SafeAreaView, TouchableOpacity, Image, FlatList
 } from 'react-native';
+import { getUserById } from '../utils/tempDatabase';
 
 // Define the type for items in the TABS array
 interface TabItem {
   id: string;
   title: string;
+  route: string; // Add route field to specify the navigation path
 }
 
-// List of tab items with their IDs and titles
+// List of tab items with their IDs, titles, and navigation routes
 const TABS: TabItem[] = [
-  { id: '1', title: 'Security' },
-  { id: '2', title: 'Notification Preferences' },
-  { id: '3', title: 'Give Feedback' },
+  { id: '1', title: 'Edit Profile', route: '/edit-profile' },
+  { id: '2', title: 'Notification Preferences', route: '/notification-preferences' },
+  { id: '3', title: 'Give Feedback', route: '/give-feedback' },
 ];
 
 export default function Setting() {
+  const router = useRouter();
+
+  // Function to navigate to a specific route when a tab is pressed
+  const handlePress = (route: string) => {
+    router.push(route as any); // Navigate to the given route
+  };
+
   // Render each item in the FlatList
   const renderItem = ({ item }: { item: TabItem }) => (
-    <TouchableOpacity style={styles.tabItem}>
+    <TouchableOpacity style={styles.tabItem} onPress={() => handlePress(item.route)}>
       <Text style={styles.tabTitle}>{item.title}</Text>
     </TouchableOpacity>
   );
-
-  const router = useRouter();
 
   const handleLogout = () => {
     router.replace('/authentication/loginStudent');
@@ -42,8 +48,7 @@ export default function Setting() {
           style={styles.profileImage}
         />
         <View style={styles.profileTextContainer}>
-          <Text style={styles.profileName}>Zhan Hung Fu</Text>
-          <Text style={styles.profileLastLogin}>Last login: Aug 7, 2024 9:58 AM</Text>
+          <Text style={styles.profileName}>{getUserById(1)?.user_username}</Text>{/* Replace with actual username */}
         </View>
       </View>
 
@@ -87,9 +92,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 5
-  },
-  profileLastLogin: {
-    color: 'gray',
   },
   tabList: {
     flexGrow: 0,

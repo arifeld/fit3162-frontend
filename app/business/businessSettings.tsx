@@ -28,7 +28,7 @@ export default function BusinessSettings() {
                 {/* Settings options */}
                 <View style={styles.settingsContainer}>
                     <TouchableOpacity style={styles.settingItem}>
-                        <Text style={styles.settingText}>Security</Text>
+                        <Text style={styles.settingText}>Edit Profile</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.settingItem}>
                         <Text style={styles.settingText}>Notification preferences</Text>
