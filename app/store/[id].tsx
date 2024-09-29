@@ -35,7 +35,7 @@ export default function StoreDetailScreen() { // Updated component name
         useCallback(() => {
             const stores = getStores(); // Get the array of stores
             const foundStore = stores.find((item) => item.store_id.toString() === id); // Find the store by ID
-
+    
             if (foundStore) {
                 const mappedStore = {
                     name: foundStore.store_name,
@@ -47,19 +47,22 @@ export default function StoreDetailScreen() { // Updated component name
                     recommendationPercentage: foundStore.recommendationPercentage,
                     ratingsDistribution: foundStore.ratingsDistribution,
                 };
-
+    
                 setStore(mappedStore);
-
+    
+                // Update navigation bar title to the store's name
+                navigation.setOptions({ title: mappedStore.name });
+    
                 const favStatus = isFavourite(userId.toString(), foundStore.store_id);
                 setIsFav(favStatus);
-
+    
                 // Fetch reviews for the store
                 const storeReviews = getReviewsByStoreId(foundStore.store_id);
                 setReviews(storeReviews);
             }
-
         }, [id]) // This effect runs whenever the screen is focused or when the id changes
     );
+    
 
     if (!store) {
         return (

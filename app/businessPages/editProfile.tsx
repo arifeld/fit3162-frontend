@@ -7,7 +7,7 @@ export default function EditBusinessProfile() {
   const router = useRouter();
 
   const handleSave = () => {
-    // Add logic to save the new business name here (e.g., API call)
+    // Add logic to save the new business name here
     Alert.alert('Profile Updated', `Business name has been changed to: ${businessName}`);
     router.back(); // Go back to the previous screen after saving
   };
