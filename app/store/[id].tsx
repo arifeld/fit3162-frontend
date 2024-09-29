@@ -4,9 +4,10 @@ import { NavigationProp, useFocusEffect, useNavigation, useRoute } from '@react-
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { addToFavourites, removeFromFavourites, isFavourite, getStores, getReviewsByStoreId } from '../utils/tempDatabase'; // Updated function import to getStores
 import { router, useLocalSearchParams } from 'expo-router';
+import { getReviewsByStoreID, getStoreByID } from '../api/stores';
 
 export default function StoreDetailScreen() { // Updated component name
-    const { id } = useLocalSearchParams(); // Get the store ID from the URL parameters
+    const { id } = useLocalSearchParams<{id: string}>(); // Get the store ID from the URL parameters
     const [isFav, setIsFav] = useState(false);
     const [store, setStore] = useState<null | {
         name: string;
@@ -33,33 +34,49 @@ export default function StoreDetailScreen() { // Updated component name
 
     useFocusEffect(
         useCallback(() => {
-            const stores = getStores(); // Get the array of stores
-            const foundStore = stores.find((item) => item.store_id.toString() === id); // Find the store by ID
-    
-            if (foundStore) {
+
+            async function getData() {
+                const store = await getStoreByID(id); // Get the array of stores
+                const reviews = await getReviewsByStoreID(id);
+
+                const distribution = [0, 0, 0, 0, 0];
+                let recommendationCount = reviews.reduce((acc, rec) => acc + rec.review_recommended, 0);
+
+                
+                for (const review of reviews) {
+                    if (![1, 2, 3, 4, 5].includes(review.review_rating)) {
+                        console.error("Invalid review value:", review.review_rating);
+                    }
+                    else {
+                        distribution[review.review_rating-1] += 1;
+                    }
+                }
+
                 const mappedStore = {
-                    name: foundStore.store_name,
-                    description: foundStore.store_description,
-                    rating: foundStore.rating,
-                    image: foundStore.image,
-                    id: foundStore.store_id,
-                    totalReviews: foundStore.totalReviews,
-                    recommendationPercentage: foundStore.recommendationPercentage,
-                    ratingsDistribution: foundStore.ratingsDistribution,
+                    name: store.store_name,
+                    description: store.store_description,
+                    rating: store.rating || 0,
+                    image: store.image,
+                    id: store.store_id,
+                    totalReviews: reviews.length,
+                    recommendationPercentage: (recommendationCount / reviews.length) * 100 , //store.recommendationPercentage,
+                    ratingsDistribution: distribution || [0, 0, 0, 0, 0], //store.ratingsDistribution,
                 };
     
                 setStore(mappedStore);
-    
-                // Update navigation bar title to the store's name
+
                 navigation.setOptions({ title: mappedStore.name });
-    
-                const favStatus = isFavourite(userId.toString(), foundStore.store_id);
+
+                const favStatus = isFavourite(userId.toString(), store.store_id);
                 setIsFav(favStatus);
     
                 // Fetch reviews for the store
-                const storeReviews = getReviewsByStoreId(foundStore.store_id);
-                setReviews(storeReviews);
+                //const storeReviews = getReviewsByStoreId(store.store_id);
+                setReviews(reviews);
+
             }
+
+            getData();
         }, [id]) // This effect runs whenever the screen is focused or when the id changes
     );
     
@@ -117,12 +134,13 @@ export default function StoreDetailScreen() { // Updated component name
 
     const getBarWidthPercentage = (count: number, total: number) => (count / total) * 100;
 
-    const renderHeader = () => (
+    const renderHeader = () => {
+        return (
         <View>
-            <Image style={styles.image} source={store.image} />
+            
+            <Image style={styles.image} source={{uri: store.image}} />
             <Text style={styles.title}>{store.name}</Text>
             <Text style={styles.description}>{store.description}</Text>
-            <Text style={styles.rating}>Rating: {store.rating}</Text>
             <View style={styles.summaryContainer}>
                 <Text style={styles.summaryTitle}>Ratings & Reviews ({store.totalReviews})</Text>
                 <View style={styles.summaryContent}>
@@ -144,7 +162,7 @@ export default function StoreDetailScreen() { // Updated component name
                     <View>
                         <Text style={styles.overallRating}>{store.rating.toFixed(1)}</Text>
                         <Text>{store.totalReviews} Reviews</Text>
-                        <Text>{store.recommendationPercentage}% Recommended</Text>
+                        <Text>{store.recommendationPercentage.toFixed(0)}% Recommended</Text>
                     </View>
                 </View>
             </View>
@@ -174,6 +192,7 @@ export default function StoreDetailScreen() { // Updated component name
             )}
         </View>
     );
+            }
 
     const handleToggleFavourite = () => {
         if (isFav) {
@@ -245,6 +264,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         marginBottom: 4,
+        marginRight: 5,
         width: 200,
     },
     ratingBarContainer: {
