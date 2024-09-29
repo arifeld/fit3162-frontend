@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Link, useRouter } from 'expo-router';
-import { StyleSheet, View, Text, SafeAreaView, Image, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, SafeAreaView, Image, TextInput, TouchableOpacity, Alert} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useLayoutEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
-
+import { loginUser } from '../api/userLogin';
 
 export default function loginStudent() {
     const router = useRouter(); // Initialize useRouter
@@ -24,7 +24,25 @@ export default function loginStudent() {
     });
 
     // State to toggle password visibility
-    const [showPassword, setShowPassword] = useState(false); 
+    const [showPassword, setShowPassword] = useState(false);
+    
+    const handleLogin = async() => {
+        console.log("passed to handleLogin");
+        console.log(form);
+
+        try {
+            // Call the createUser API
+            const response = await loginUser(form.email, form.password);
+            if (response.status === 201) {
+                router.replace('/student/home');
+            } else {
+                Alert.alert("Error", "Failed to login. Check credentials.");
+            }
+        } catch (error) {
+            console.error("Error during signup:", error);
+            Alert.alert("Error", "Incorrect Login Credentials, please check your password");
+        }
+    };
     
     return (
         <SafeAreaView style={{flex: 1}}>
@@ -89,7 +107,7 @@ export default function loginStudent() {
                     <View style={styles.formAction}>
                         <TouchableOpacity   
                             //go to home for now
-                            onPress={() => router.replace('/student/home')}>
+                            onPress={handleLogin}>
                             <View style={styles.btn}>
                                 <Text style={styles.btnText}>Sign in</Text>
                             </View>
