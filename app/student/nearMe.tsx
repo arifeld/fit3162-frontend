@@ -1,12 +1,34 @@
-import React from 'react';
-import { View, StyleSheet, TouchableOpacity, Text, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, TouchableOpacity, Text, Alert, Pressable, Button } from 'react-native';
 import MapView, { Marker, Callout } from 'react-native-maps';
 import { Link } from 'expo-router';
 import { getStores } from '../utils/tempDatabase';
 import * as Linking from 'expo-linking';
+import { getAllStores } from '../api/stores';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { router } from 'expo-router';
+import * as Location from 'expo-location';
+
+
 
 export default function NearMe() {
-  const stores = getStores();
+
+  const [stores, setStores] = useState<any[]|null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const navigation = useNavigation<NavigationProp<any>>();
+
+
+  useEffect(() => {
+    async function getData() {
+      setIsLoading(true);
+      const data = await getAllStores();
+      setStores(data);
+      setIsLoading(false);
+    }
+
+    getData();
+  }, []);
 
   const openNavigation = (latitude: number, longitude: number) => {
     const url = `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}&travelmode=driving&dir_action=navigate`;
@@ -19,14 +41,17 @@ export default function NearMe() {
     <View style={styles.container}>
       <MapView
         style={styles.map}
+        showsUserLocation={true}
+        followsUserLocation={true}
+        showsMyLocationButton={true}
         initialRegion={{
-          latitude: -37.8136,
-          longitude: 144.9631,
+          latitude: -37.911,
+          longitude: 145.133,
           latitudeDelta: 0.05,
           longitudeDelta: 0.05,
         }}
       >
-        {stores.map((store) => (
+        {isLoading ? null : stores!.map((store) => (
           <Marker
             key={store.store_id}
             coordinate={{
@@ -35,21 +60,12 @@ export default function NearMe() {
             }}
             title={store.store_name}
           >
-            <Callout>
+            <Callout onPress={() => {
+              router.push(`/store/${store.store_id}`);
+            }}>
               <View style={styles.calloutContainer}>
-                <Link
-                  href={`/store/${store.store_id}`}  // Use Link to navigate to the details page
-                  asChild
-                >
-                  <TouchableOpacity>
-                    <Text style={styles.calloutOption}>See Details</Text>
-                  </TouchableOpacity>
-                </Link>
-                <TouchableOpacity
-                  onPress={() => openNavigation(store.latitude, store.longitude)}
-                >
-                  <Text style={styles.calloutOption}>Navigate</Text>
-                </TouchableOpacity>
+                <Text style={styles.text}>{store.store_name}</Text>
+                <Button title="View Details" />
               </View>
             </Callout>
           </Marker>
@@ -65,9 +81,15 @@ const styles = StyleSheet.create({
   },
   map: {
     ...StyleSheet.absoluteFillObject,
+    width: "100%",
+    height: "100%"
   },
   calloutContainer: {
     alignItems: 'center',
+    padding: 20
+  },
+  text: {
+    margin: 10,
   },
   calloutOption: {
     padding: 10,
