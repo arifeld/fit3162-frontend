@@ -157,6 +157,10 @@ const tempDatabase = {
 
 // Functions to interact with the temp database
 
+export const getUserById = (userId: number) => {
+    return tempDatabase.users.find(user => user.user_id === userId);
+}
+
 export const getStoresByBusiness = (businessId: number) => {
     return tempDatabase.stores.filter(store => store.business_id === businessId);
 };
