@@ -3,11 +3,7 @@ import axios, { AxiosInstance } from 'axios';
 import Constants from "expo-constants";
 
 const DEV_API = "http://"+Constants.expoConfig?.hostUri?.split(':').shift()?.concat(':4000')
-
-
-
-
-const ROOT_URL = (process.env.NODE_ENV === "production" ? "N/A" : DEV_API)
+const ROOT_URL = (process.env.NODE_ENV === "production" ? process.env.API_ENDPOINT : DEV_API)
 
 const axiosClient = axios.create({
   baseURL: ROOT_URL,

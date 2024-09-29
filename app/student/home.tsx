@@ -19,8 +19,9 @@ export default function Home() {
   async function getData() {
     setLoading(true);
     const stores = await getAllStores();
-    setStores(stores.data);
-    console.log(stores.data);
+    setStores(stores);
+    console.log("it's here:")
+    console.log(stores);
     setLoading(false);
     setRefreshing(false);
   }
