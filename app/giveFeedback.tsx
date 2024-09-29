@@ -29,8 +29,9 @@ export default function GiveFeedback() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
     backgroundColor: '#f4f4f4',
+    marginVertical: 15,
+    marginHorizontal: 20,
   },
   headerText: {
     fontSize: 24,
