@@ -14,9 +14,9 @@ interface TabItem {
 
 // List of tab items with their IDs, titles, and navigation routes
 const TABS: TabItem[] = [
-  { id: '1', title: 'Edit Profile', route: '/edit-profile' },
-  { id: '2', title: 'Notification Preferences', route: '/notification-preferences' },
-  { id: '3', title: 'Give Feedback', route: '/give-feedback' },
+  { id: '1', title: 'Edit Profile', route: '/editProfile' },
+  { id: '2', title: 'Notification Preferences', route: '/notificationPreferences' },
+  { id: '3', title: 'Give Feedback', route: '/giveFeedback' },
 ];
 
 export default function Setting() {
