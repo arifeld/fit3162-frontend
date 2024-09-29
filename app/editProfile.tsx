@@ -56,8 +56,8 @@ export default function EditProfile() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 20,
-    paddingVertical: 30,
+    marginVertical: 15,
+    marginHorizontal: 20,
     backgroundColor: '#f4f4f4',
   },
   headerContainer: {
