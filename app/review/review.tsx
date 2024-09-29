@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, Image, Switch, StyleSheet, Tou
 import { FontAwesome } from '@expo/vector-icons';
 import { addReview } from '../utils/tempDatabase'; // Import the addReview function
 import { useLocalSearchParams } from 'expo-router';
+import * as ImagePicker from 'expo-image-picker';
 
 export default function WriteReviewScreen() {
   const { restaurantId } = useLocalSearchParams(); // Get the restaurant ID from the URL parameters
@@ -11,7 +12,8 @@ export default function WriteReviewScreen() {
   const [description, setDescription] = useState('');
   const [anonymous, setAnonymous] = useState(false);
   const [recommend, setRecommend] = useState(false);
-  const [images, setImages] = useState<Array<string>>([]);
+  const [images, setImages] = useState<string[]>([]);
+
 
   const userId = 1; // Replace with dynamic user ID
 
@@ -19,9 +21,19 @@ export default function WriteReviewScreen() {
     setRating(value);
   };
 
-  const handleAddImage = () => {
-    const newImage = 'https://via.placeholder.com/100'; // Placeholder for the picked image
-    setImages([...images, newImage]);
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      const uris = result.assets.map(asset => asset.uri);  // Extract URIs from assets
+      setImages([...images, ...uris]);  // Append new images to the array
+    }
   };
 
   const handleSubmit = () => {
@@ -63,7 +75,7 @@ export default function WriteReviewScreen() {
 
           <Text style={styles.label}>Add images (max 3):</Text>
           <View style={styles.imageContainer}>
-            <TouchableOpacity style={styles.addImageButton} onPress={handleAddImage}>
+            <TouchableOpacity style={styles.addImageButton} onPress={pickImage}>
               <FontAwesome name="plus" size={32} color="#000" />
             </TouchableOpacity>
             {images.map((image, index) => (
