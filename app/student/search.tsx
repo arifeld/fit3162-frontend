@@ -1,19 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, TextInput, View, Text, Image, FlatList, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { searchRestaurantsByName } from '../utils/tempDatabase';
 import Card from '../components/StoreCard';
+import { searchStoresByName } from '../api/stores';
 
 export default function Search() {
+  const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [filteredRestaurants, setFilteredRestaurants] = useState<{ name: string; description: string; rating: number; image: any; id: number; }[]>([]);
+  const [searchResults, setSearchResults] = useState([]);
 
   // Function to handle search input changes
   const handleSearchChange = (query: string) => {
     setSearchQuery(query);
-    const results = searchRestaurantsByName(query);
-    setFilteredRestaurants(results);
+    getData();
   };
+
+  async function getData() {
+    setIsLoading(true);
+    const results = await searchStoresByName(searchQuery);
+    setSearchResults(results);
+    setIsLoading(false);
+    console.log(searchResults);
+  }
+
+  useEffect(() => {
+    getData();
+  }, []);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -30,10 +42,10 @@ export default function Search() {
         </View>
 
         {/* Scrollable content: Search Results */}
-        {filteredRestaurants.length > 0 ? (
+        {searchResults !== null && searchResults.length > 0 ? (
           <FlatList
-            data={filteredRestaurants}
-            keyExtractor={(restaurant) => restaurant.id.toString()}
+            data={searchResults}
+            keyExtractor={(store) => store.store_id.toString()}
             renderItem={({ item }) => <Card info={item} />}
             contentContainerStyle={styles.flatListContentContainer} // Style for FlatList content
           />

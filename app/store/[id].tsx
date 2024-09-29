@@ -59,7 +59,7 @@ export default function StoreDetailScreen() { // Updated component name
                     image: store.image,
                     id: store.store_id,
                     totalReviews: reviews.length,
-                    recommendationPercentage: (recommendationCount / reviews.length) * 100 , //store.recommendationPercentage,
+                    recommendationPercentage: reviews.length !== 0 ? (recommendationCount / reviews.length) * 100 : 0, //store.recommendationPercentage,
                     ratingsDistribution: distribution || [0, 0, 0, 0, 0], //store.ratingsDistribution,
                 };
 

@@ -40,3 +40,11 @@ export const populatePhotos = async(data: object[]) => {
 
     return output;
 }
+
+
+export const searchStoresByName = async(name: string) => {
+    const rawRequest = await axiosClient.get(`store/name/${name}`);
+    const data = rawRequest.data;
+    const finalResults = await populatePhotos(data);
+    return finalResults;
+}

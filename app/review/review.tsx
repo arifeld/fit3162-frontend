@@ -6,6 +6,7 @@ import { useLocalSearchParams } from 'expo-router';
 import { createReview } from '../api/reviews';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 
+import * as ImagePicker from 'expo-image-picker';
 
 export default function WriteReviewScreen() {
   const { storeId } = useLocalSearchParams<{storeId: string}>(); // Get the restaurant ID from the URL parameters
@@ -14,7 +15,9 @@ export default function WriteReviewScreen() {
   const [description, setDescription] = useState('');
   const [anonymous, setAnonymous] = useState(false);
   const [recommend, setRecommend] = useState(false);
-  const [images, setImages] = useState<Array<string>>([]);
+  const [images, setImages] = useState<string[]>([]);
+  const [imagesBase64, setImagesBase64] = useState<string[]>([])
+
 
   const userId = 1; // Replace with dynamic user ID
 
@@ -25,9 +28,22 @@ export default function WriteReviewScreen() {
     setRating(value);
   };
 
-  const handleAddImage = () => {
-    const newImage = 'https://via.placeholder.com/100'; // Placeholder for the picked image
-    setImages([...images, newImage]);
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+      base64: true
+    });
+
+    if (!result.canceled) {
+      const uris = result.assets.map(asset => asset.uri);  // Extract URIs from assets
+      const base64s = result.assets.map(asset => asset.base64!)
+      setImagesBase64(base64s);
+      setImages([...images, ...uris]);  // Append new images to the array
+    }
   };
 
   const handleSubmit = () => {
@@ -36,12 +52,19 @@ export default function WriteReviewScreen() {
       return;
     }
 
-    createReview(storeId, userId, rating, description, recommend)
+    createReview(storeId, userId, rating, description, recommend, images)
       .then((res) => {
         Alert.alert('Success', 'Your review has been submitted!', [{
           text: "Ok",
           onPress: () => navigation.goBack()
         }])
+      })
+      .catch((err) => {
+        Alert.alert("Failure", "Something went wrong. Please try again.", [{
+          text: "Ok",
+          onPress: () => navigation.goBack()
+        }]
+        )
       }); // Add the review to the database
     // Optionally reset the form or navigate away
   };
@@ -74,7 +97,7 @@ export default function WriteReviewScreen() {
 
           <Text style={styles.label}>Add images (max 3):</Text>
           <View style={styles.imageContainer}>
-            <TouchableOpacity style={styles.addImageButton} onPress={handleAddImage}>
+            <TouchableOpacity style={styles.addImageButton} onPress={pickImage}>
               <FontAwesome name="plus" size={32} color="#000" />
             </TouchableOpacity>
             {images.map((image, index) => (

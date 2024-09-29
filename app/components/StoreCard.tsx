@@ -14,6 +14,8 @@ type StoreCardProps = {
 };
 
 const StoreCard: React.FC<StoreCardProps> = ({ info }) => {
+
+  
   return (
     <Link
     href={`/store/${info.store_id}`}  // Just pass the path with dynamic id
@@ -29,7 +31,7 @@ const StoreCard: React.FC<StoreCardProps> = ({ info }) => {
             </Text>
           </View>
           <View style={styles.starContainer}>
-            <Text style={styles.rating}>{info.rating.toFixed(1)}</Text>
+            <Text style={styles.rating}>{info.rating?.toFixed(1) || "N/A"}</Text>
             <Icon style={styles.star} name="star" size={20} color="#FFD43B" />
           </View>
         </View>
