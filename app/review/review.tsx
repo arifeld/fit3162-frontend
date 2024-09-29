@@ -4,6 +4,8 @@ import { FontAwesome } from '@expo/vector-icons';
 import { addReview } from '../utils/tempDatabase'; // Import the addReview function
 import { useLocalSearchParams } from 'expo-router';
 import { createReview } from '../api/reviews';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+
 
 export default function WriteReviewScreen() {
   const { storeId } = useLocalSearchParams<{storeId: string}>(); // Get the restaurant ID from the URL parameters
@@ -15,6 +17,9 @@ export default function WriteReviewScreen() {
   const [images, setImages] = useState<Array<string>>([]);
 
   const userId = 1; // Replace with dynamic user ID
+
+  const navigation = useNavigation<NavigationProp<any>>();
+
 
   const handleRating = (value: number) => {
     setRating(value);
@@ -33,7 +38,10 @@ export default function WriteReviewScreen() {
 
     createReview(storeId, userId, rating, description, recommend)
       .then((res) => {
-        Alert.alert('Success', 'Your review has been submitted!');
+        Alert.alert('Success', 'Your review has been submitted!', [{
+          text: "Ok",
+          onPress: () => navigation.goBack()
+        }])
       }); // Add the review to the database
     // Optionally reset the form or navigate away
   };
