@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { useLayoutEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { loginUser } from '../api/userLogin';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function loginStudent() {
     const router = useRouter(); // Initialize useRouter
@@ -34,7 +35,8 @@ export default function loginStudent() {
             // Call the createUser API
             const response = await loginUser(form.email, form.password);
             if (response.status === 201) {
-                router.replace('/student/home');
+                await AsyncStorage.setItem("userEmail", form.email);
+                router.replace(`/student/home`);
             } else {
                 Alert.alert("Error", "Failed to login. Check credentials.");
             }
