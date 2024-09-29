@@ -10,11 +10,19 @@ const DEV_API = "http://"+Constants.expoConfig?.hostUri?.split(':').shift()?.con
 const ROOT_URL = (process.env.NODE_ENV === "production" ? process.env.API_ENDPOINT : DEV_API)
 
 
-export const getAllStores = async () => {
-    const rawRequest = await axiosClient.get("store");
-    const data = rawRequest.data;
-    const finalResults = await populatePhotos(data);
-    return finalResults;
+export const createReview = async (storeId: string, userId: number, rating: number, description: string, recommend: boolean) => {
+    const request = {
+        "review_date": new Date(),
+        "review_rating": rating,
+        "review_description": description,
+        "user_id": userId,
+        "store_id": storeId,
+        "review_recommended": recommend ? 1 : 0,
+    }
+
+    console.log(request)
+
+    return axiosClient.post("review", request);
 }
 
 export const getStoreByID = async(id: string) => {

@@ -49,7 +49,7 @@ export default function Home() {
       <FlatList
         data={stores}
         keyExtractor={(store) => store.store_id.toString()}
-        renderItem={({ item }) => <Card info={{ store_id: item.store_id, store_name: item.store_name, store_description: item.store_description, rating: item.rating || 3, image: item.image }} />}
+        renderItem={({ item }) => <Card info={{ store_id: item.store_id, store_name: item.store_name, store_description: item.store_description, rating: item.rating || 0, image: item.image }} />}
         contentContainerStyle={styles.container} // Style to wrap list content
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />

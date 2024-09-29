@@ -3,9 +3,10 @@ import { View, Text, TextInput, TouchableOpacity, Image, Switch, StyleSheet, Tou
 import { FontAwesome } from '@expo/vector-icons';
 import { addReview } from '../utils/tempDatabase'; // Import the addReview function
 import { useLocalSearchParams } from 'expo-router';
+import { createReview } from '../api/reviews';
 
 export default function WriteReviewScreen() {
-  const { restaurantId } = useLocalSearchParams(); // Get the restaurant ID from the URL parameters
+  const { storeId } = useLocalSearchParams<{storeId: string}>(); // Get the restaurant ID from the URL parameters
   const [rating, setRating] = useState(0);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -30,8 +31,10 @@ export default function WriteReviewScreen() {
       return;
     }
 
-    addReview(Number(restaurantId), userId, rating, description, recommend); // Add the review to the database
-    Alert.alert('Success', 'Your review has been submitted!');
+    createReview(storeId, userId, rating, description, recommend)
+      .then((res) => {
+        Alert.alert('Success', 'Your review has been submitted!');
+      }); // Add the review to the database
     // Optionally reset the form or navigate away
   };
 
