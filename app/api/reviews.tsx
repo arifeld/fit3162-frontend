@@ -12,7 +12,6 @@ const ROOT_URL = (process.env.NODE_ENV === "production" ? process.env.API_ENDPOI
 
 export const createReview = async (storeId: string, userId: number, rating: number, description: string, recommend: boolean) => {
     const request = {
-        "review_date": new Date(),
         "review_rating": rating,
         "review_description": description,
         "user_id": userId,

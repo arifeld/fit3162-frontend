@@ -40,6 +40,9 @@ export default function StoreDetailScreen() { // Updated component name
                 const reviews = await getReviewsByStoreID(id);
 
                 const distribution = [0, 0, 0, 0, 0];
+                let recommendationCount = reviews.reduce((acc, rec) => acc + rec.review_recommended, 0);
+
+                
                 for (const review of reviews) {
                     if (![1, 2, 3, 4, 5].includes(review.review_rating)) {
                         console.error("Invalid review value:", review.review_rating);
@@ -56,7 +59,7 @@ export default function StoreDetailScreen() { // Updated component name
                     image: store.image,
                     id: store.store_id,
                     totalReviews: reviews.length,
-                    recommendationPercentage: 0, //store.recommendationPercentage,
+                    recommendationPercentage: (recommendationCount / reviews.length) * 100 , //store.recommendationPercentage,
                     ratingsDistribution: distribution || [0, 0, 0, 0, 0], //store.ratingsDistribution,
                 };
 
@@ -67,7 +70,7 @@ export default function StoreDetailScreen() { // Updated component name
 
                 // Fetch reviews for the store
                 //const storeReviews = getReviewsByStoreId(store.store_id);
-                //setReviews(storeReviews);
+                setReviews(reviews);
 
             }
 
@@ -129,14 +132,12 @@ export default function StoreDetailScreen() { // Updated component name
     const getBarWidthPercentage = (count: number, total: number) => (count / total) * 100;
 
     const renderHeader = () => {
-        console.log(store.image);
         return (
         <View>
             
             <Image style={styles.image} source={{uri: store.image}} />
             <Text style={styles.title}>{store.name}</Text>
             <Text style={styles.description}>{store.description}</Text>
-            <Text style={styles.rating}>Rating: {store.rating}</Text>
             <View style={styles.summaryContainer}>
                 <Text style={styles.summaryTitle}>Ratings & Reviews ({store.totalReviews})</Text>
                 <View style={styles.summaryContent}>
@@ -158,7 +159,7 @@ export default function StoreDetailScreen() { // Updated component name
                     <View>
                         <Text style={styles.overallRating}>{store.rating.toFixed(1)}</Text>
                         <Text>{store.totalReviews} Reviews</Text>
-                        <Text>{store.recommendationPercentage}% Recommended</Text>
+                        <Text>{store.recommendationPercentage.toFixed(0)}% Recommended</Text>
                     </View>
                 </View>
             </View>
@@ -260,6 +261,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         marginBottom: 4,
+        marginRight: 5,
         width: 200,
     },
     ratingBarContainer: {
