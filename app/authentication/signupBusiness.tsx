@@ -12,7 +12,9 @@ export default function signupStudent() {
     })
 
     // State to toggle password visibility
-    const [showPassword, setShowPassword] = useState(false); 
+    const [showPassword, setShowPassword] = useState(false);
+    
+    
 
     return ( 
     <SafeAreaView style={{flex: 1}}>

@@ -21,3 +21,15 @@ export const createUser = async (  user_email: string, user_password: string, us
 
     return axiosClient.post("user", request);
 }
+
+export const loginUser = async (user_email: string, user_password: string) => {
+    const request = {
+        "user_email": user_email,
+        "user_password": user_password,
+    }
+
+    console.log(request);
+
+    return axiosClient.post("user/login", request);
+
+}
