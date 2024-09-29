@@ -43,7 +43,8 @@ export default function NotificationPreferences() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    marginVertical: 15,
+    marginHorizontal: 20,
     backgroundColor: '#f4f4f4',
   },
   headerText: {
