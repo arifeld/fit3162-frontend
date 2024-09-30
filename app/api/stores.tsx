@@ -27,7 +27,7 @@ export const getStoreByID = async(id: string) => {
 export const getReviewsByStoreID = async(id: string) => {
     const rawRequest = await axiosClient.get(`review/${id}`);
     const data = rawRequest.data;
-    const finalResults = await populateReviewPhotos(data);
+    const finalResults = populateReviewPhotos(data);
     console.log(finalResults);
     return finalResults;
 }
@@ -46,7 +46,7 @@ export const populatePhotos = async(data: object[]) => {
     return output;
 }
 
-export const populateReviewPhotos = async(data: object[]) => {
+export const populateReviewPhotos = (data: object[]) => {
     const output = [];
 
     for (let review of data) {

@@ -4,10 +4,10 @@ import { NavigationProp, useFocusEffect, useNavigation, useRoute } from '@react-
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { isFavourite, getStores, getReviewsByStoreId } from '../utils/tempDatabase'; // Updated function import to getStores
 import { Stack, router, useLocalSearchParams } from 'expo-router';
-//import { getReviewsByStoreID, getStoreByID } from '../api/stores';
+import { getReviewsByStoreID, getStoreByID } from '../api/stores';
 import { addToFavourites, checkFavourites, removeFromFavourites } from '../api/userfavourites';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getReviewsByStoreID, getStoreByID } from '../api/reviews';
+// import { getReviewsByStoreID, getStoreByID } from '../api/reviews';
 
 
 export default function StoreDetailScreen() { // Updated component name
@@ -86,6 +86,8 @@ export default function StoreDetailScreen() { // Updated component name
                 //const storeReviews = getReviewsByStoreId(store.store_id);
                 setReviews(reviews);
 
+                console.log(reviews);
+
             }
 
             getData();
@@ -101,7 +103,11 @@ export default function StoreDetailScreen() { // Updated component name
         );
     }
 
-    const renderReview = ({ item }: { item: any }) => (
+    const renderReview = ({ item }: { item: any }) => {
+        console.log("ITEM");
+        console.log(item);
+        
+        return (
         <View style={styles.reviewContainer}>
             <Text style={styles.userName}>{item.user_username}</Text>
             <View style={styles.starContainer}>
@@ -110,6 +116,7 @@ export default function StoreDetailScreen() { // Updated component name
                 ))}
             </View>
             <Text style={styles.comment}>{item.review_description}</Text>
+            {item.images.map((image) => <Image style={styles.image} key={image} source={{uri: image}} />)}
             <View style={styles.reviewFooter}>
                 <Text style={styles.date}>{item.review_date}</Text>
                 {item.review_business_response && (
@@ -128,6 +135,8 @@ export default function StoreDetailScreen() { // Updated component name
             )}
         </View>
     );
+
+            }
     
 
     const handleReply = (review: any) => {
@@ -181,7 +190,7 @@ export default function StoreDetailScreen() { // Updated component name
                     <View>
                         <Text style={styles.overallRating}>{store.rating.toFixed(1)}</Text>
                         <Text>{store.totalReviews} Reviews</Text>
-                        <Text>{store.recommendationPercentage.toFixed(0)}% Recommended</Text>
+                        <Text>{(store.recommendationPercentage || 0).toFixed(0)}% Recommended</Text>
                     </View>
                 </View>
             </View>

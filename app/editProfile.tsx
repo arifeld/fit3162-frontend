@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, SafeAreaView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getUserNameFromId, updateUserName} from './api/User'; // Import the API call
 import { Stack } from 'expo-router';
+import { getUserIdByEmail, getUserNameFromId } from './api/user';
 
 export default function EditProfile() {
   const [userId, setUserId] = useState<number | null>(null); // State to hold userId

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, Switch, StyleSheet, TouchableWithoutFeedback, Keyboard, ScrollView, Alert } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { addReview } from '../utils/tempDatabase'; // Import the addReview function
-import { useLocalSearchParams } from 'expo-router';
+import { Stack, useLocalSearchParams } from 'expo-router';
 import { createReview } from '../api/reviews';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 
@@ -62,12 +62,16 @@ export default function WriteReviewScreen() {
     const result = await ImagePicker.launchCameraAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
-      // aspect: [4, 3],
+      aspect: [4, 3],
       quality: 1,
+      base64: true,
     });
 
     if (!result.canceled) {
       const uris = result.assets.map(asset => asset.uri);  // Extract URIs from assets
+      const base64s = result.assets.map(asset => asset.base64!)
+
+      setImagesBase64([...imagesBase64, ...base64s]);
       setImages([...images, ...uris]);  // Append new images to the array
     }
   };
@@ -110,7 +114,9 @@ export default function WriteReviewScreen() {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      
       <View style={styles.container}>
+      <Stack.Screen options={{title: "Submit a Review"}} />
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
           <Text style={styles.heading}>Ratings</Text>
           <View style={styles.ratingContainer}>
@@ -144,10 +150,10 @@ export default function WriteReviewScreen() {
             ))}
           </View>
 
-          <View style={styles.switchContainer}>
+          {/* <View style={styles.switchContainer}>
             <Text style={styles.switchLabel}>Anonymous</Text>
             <Switch value={anonymous} onValueChange={setAnonymous} />
-          </View>
+          </View> */}
 
           <View style={styles.switchContainer}>
             <Text style={styles.switchLabel}>Recommend</Text>
