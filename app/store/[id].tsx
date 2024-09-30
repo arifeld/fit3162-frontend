@@ -1,10 +1,13 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
 import { NavigationProp, useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { addToFavourites, removeFromFavourites, isFavourite, getStores, getReviewsByStoreId } from '../utils/tempDatabase'; // Updated function import to getStores
+import {  removeFromFavourites, isFavourite, getStores, getReviewsByStoreId } from '../utils/tempDatabase'; // Updated function import to getStores
 import { router, useLocalSearchParams } from 'expo-router';
 import { getReviewsByStoreID, getStoreByID } from '../api/stores';
+import { addToFavourites } from '../api/userfavourites';
+import { getUserIdByEmail } from '../api/User';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function StoreDetailScreen() { // Updated component name
     const { id } = useLocalSearchParams<{id: string}>(); // Get the store ID from the URL parameters
@@ -19,6 +22,7 @@ export default function StoreDetailScreen() { // Updated component name
         recommendationPercentage: number;
         ratingsDistribution: number[];
     }>(null);
+    const [userId, setUserId] = useState(0);
 
     const navigation = useNavigation<NavigationProp<any>>();
 
@@ -27,10 +31,7 @@ export default function StoreDetailScreen() { // Updated component name
 
     const previousRouteName = navigationState?.routes?.[navigationState.index - 1]?.name;
 
-    console.log('Previous Route Name:', previousRouteName);
-
     const [reviews, setReviews] = useState<{ review_id: number; review_date: string; review_rating: number; review_description: string; user_id: number; store_id: number; review_business_response: string; }[]>([]);
-    const userId = 1; // Replace this with dynamic user ID retrieval, for now, it's a static ID for testing
 
     useFocusEffect(
         useCallback(() => {
@@ -40,7 +41,7 @@ export default function StoreDetailScreen() { // Updated component name
                 const reviews = await getReviewsByStoreID(id);
 
                 const distribution = [0, 0, 0, 0, 0];
-                let recommendationCount = reviews.reduce((acc, rec) => acc + rec.review_recommended, 0);
+                let recommendationCount = reviews.reduce((acc:any, rec:any) => acc + rec.review_recommended, 0);
 
                 
                 for (const review of reviews) {
@@ -199,7 +200,7 @@ export default function StoreDetailScreen() { // Updated component name
             removeFromFavourites(userId.toString(), store.id);
             Alert.alert('Removed from Favourites', `Store ID ${store.id} has been removed from your favourites.`);
         } else {
-            addToFavourites(userId.toString(), store.id);
+            addToFavourites(Number(userId.toString()), store.id);
             Alert.alert('Added to Favourites', `Store ID ${store.id} has been added to your favourites.`);
         }
         setIsFav(!isFav); // Toggle favourite state

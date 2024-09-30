@@ -1,11 +1,36 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, SafeAreaView } from 'react-native';
-import { getUserById } from './utils/tempDatabase'; // Assuming this function gets user details
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getUserNameFromId, updateUserName} from './api/User'; // Import the API call
 
 export default function EditProfile() {
-  // Fetch the current user's details
-  const currentUser = getUserById(1); // Replace with actual logic to fetch user
-  const [username, setUsername] = useState(currentUser?.user_username || ''); // Initialize state with current username
+  const [userId, setUserId] = useState<number | null>(null); // State to hold userId
+  const [username, setUsername] = useState<string>(''); // State to hold new username
+  const [currentUsername, setCurrentUsername] = useState<string>(''); // State to hold current username
+
+  // Fetch userId and user details when the component mounts
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      try {
+        const storedUserId = await AsyncStorage.getItem('userId'); // Fetch userId from AsyncStorage
+        if (storedUserId) {
+          const userId = Number(storedUserId);
+          setUserId(userId);
+
+          // Fetch the username from the API
+          const fetchedUsername = await getUserNameFromId(userId);
+          setCurrentUsername(fetchedUsername); // Set the current username
+          setUsername(fetchedUsername); // Set the username for editing
+        } else {
+          console.warn('No user ID found in AsyncStorage');
+        }
+      } catch (error) {
+        console.error('Failed to retrieve user details:', error);
+      }
+    };
+
+    fetchUserDetails(); // Call the function to fetch the user details
+  }, []);
 
   const handleSave = () => {
     // Perform validation 
@@ -14,8 +39,8 @@ export default function EditProfile() {
       return;
     }
 
-    // Update the user's profile
-    // Call the API to update the user's username
+    // Here would call an API to update the user's username
+    updateUserName(userId!, username); // Call the API to update the username
     Alert.alert('Profile Updated', `Username has been changed to: ${username}`);
   };
 
@@ -29,7 +54,7 @@ export default function EditProfile() {
       {/* Current Username Container */}
       <View style={styles.userInfoContainer}>
         <Text style={styles.label}>Current Username:</Text>
-        <Text style={styles.currentUsername}>{currentUser?.user_username}</Text>
+        <Text style={styles.currentUsername}>{currentUsername || 'Loading...'}</Text>
       </View>
 
       {/* New Username Input Container */}

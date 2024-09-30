@@ -7,7 +7,7 @@ const ROOT_URL = (process.env.NODE_ENV === "production" ? process.env.API_ENDPOI
 
 const axiosClient = axios.create({
   baseURL: ROOT_URL,
-  timeout: 1000,
+  timeout: 5000,
   // can put headers here if needed 
 })
 
