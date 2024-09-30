@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'expo-router';
+import { Link, Stack } from 'expo-router';
 import { StyleSheet, View, Text, SafeAreaView, Image, TextInput, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -16,6 +16,8 @@ export default function loginStudent() {
     
     return (
         <SafeAreaView style={{flex: 1}}>
+            <Stack.Screen options={{title: "Forgot Password", headerTitle: "Forgot Password", headerShown: true}}/>
+
             <View style={styles.container}>
                 {/* Header section with logo and title */}
                 <View style={styles.header}>
@@ -57,7 +59,7 @@ export default function loginStudent() {
 
                     {/* Back to login button */}
                     <View style={styles.backToLoginContainer}>
-                        <Link href={`/authentication/loginBusiness`}>
+                        <Link href={`/authentication/loginStudent`}>
                             <Text style={styles.backToLogin}>{`<`} Back to login?</Text>
                         </Link>
                     </View>

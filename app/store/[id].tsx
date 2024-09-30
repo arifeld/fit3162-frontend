@@ -3,7 +3,7 @@ import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity, Alert } from
 import { NavigationProp, useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { isFavourite, getStores, getReviewsByStoreId } from '../utils/tempDatabase'; // Updated function import to getStores
-import { router, useLocalSearchParams } from 'expo-router';
+import { Stack, router, useLocalSearchParams } from 'expo-router';
 //import { getReviewsByStoreID, getStoreByID } from '../api/stores';
 import { addToFavourites, checkFavourites, removeFromFavourites } from '../api/userfavourites';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -147,10 +147,17 @@ export default function StoreDetailScreen() { // Updated component name
     const getBarWidthPercentage = (count: number, total: number) => (count / total) * 100;
 
     const renderHeader = () => {
+
+        console.log(store.image)
         return (
         <View>
-            
-            <Image style={styles.image} source={{uri: store.image}} />
+            <Stack.Screen
+                options={{
+                    title: store.name
+                }}
+            />
+            { /* For the purposes of the demo, we bypass the cache by doing this */ }
+            <Image style={styles.image} source={{uri: store.image + "?" + Math.random().toString(10)}} /> 
             <Text style={styles.title}>{store.name}</Text>
             <Text style={styles.description}>{store.description}</Text>
             <View style={styles.summaryContainer}>

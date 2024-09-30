@@ -1,3 +1,4 @@
+import { Stack } from 'expo-router';
 import React, { useState } from 'react';
 import { View, Text, Switch, StyleSheet, SafeAreaView } from 'react-native';
 
@@ -8,8 +9,7 @@ export default function NotificationPreferences() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.headerText}>Notification Preferences</Text>
-
+      <Stack.Screen options={{title: "Notification Preferences"}} />
       {/* Push Notifications */}
       <View style={styles.preferenceItem}>
         <Text style={styles.preferenceLabel}>Push Notifications</Text>
