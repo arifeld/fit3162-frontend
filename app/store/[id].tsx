@@ -333,9 +333,9 @@ const styles = StyleSheet.create({
         marginBottom: 8,
     },
     reviewFooter: {
-        flexDirection: 'row',
+        flexDirection: 'column',
         justifyContent: 'space-between',
-        alignItems: 'center',
+        alignItems: 'lefft',
     },
     helpful: {
         fontSize: 12,

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
-import { useLocalSearchParams, router } from 'expo-router'; // Using expo-router to fetch params
+import { useLocalSearchParams, router, Stack } from 'expo-router'; // Using expo-router to fetch params
+import { createReply } from '../api/reviews';
 
 export default function ReplyPage() {
     const { reviewId, userUsername, reviewDescription } = useLocalSearchParams(); // Retrieve the review details from params
@@ -12,15 +13,26 @@ export default function ReplyPage() {
             return;
         }
 
-        // Logic for submitting the reply (e.g., API call or saving locally)
-        Alert.alert('Reply Submitted', `Your reply to review by ${userUsername} has been submitted.`);
+        console.log(reviewId);
+
+        createReply(reviewId, replyText).then((res) => {
+            Alert.alert('Success', 'Your reply has been submitted.', [{
+                text: "Ok",
+                onPress: () => router.back()
+              }])
+        }).catch((err) => {
+            Alert.alert("Failure", "Something went wrong. Please try again.", [{
+              text: "Ok",
+              onPress: () => router.back()
+            }]
+            )
+          });
         
-        // Navigate back after submitting
-        router.back();
     };
 
     return (
         <View style={styles.container}>
+            <Stack.Screen options={{title: "Replying to Review"}} />
             {/* Display the review details */}
             <Text style={styles.title}>Reply to Review</Text>
             <Text style={styles.reviewUsername}>Review by: {userUsername}</Text>

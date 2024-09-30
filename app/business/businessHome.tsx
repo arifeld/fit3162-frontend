@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useRouter, useLocalSearchParams } from 'expo-router';
+import { useRouter, useLocalSearchParams, Stack } from 'expo-router';
 import { StyleSheet, View, Text, FlatList, RefreshControl } from 'react-native';
 import StoreCard from '../components/StoreCard';
 import { getStoresByBusinessId } from '../api/stores';
@@ -69,6 +69,7 @@ export default function BusinessHome() {
 
     return (
         <View style={styles.outerContainer}>
+            <Stack.Screen options={{title: "Business Home"}} />
             {stores.length === 0 ? (
                 <Text style={styles.emptyMessage}>No stores available</Text>
             ) : (

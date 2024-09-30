@@ -56,3 +56,15 @@ export const populatePhotos = async(data: object[]) => {
 
     return output;
 }
+
+export const createReply = async(reviewId: string, reply: string) => {
+    const request = {
+        "review_id": reviewId,
+        "business_id": 1,
+        "review_description": reply
+    }
+
+    return axiosClient.post(`review/reply/${reviewId}`, request)
+        .then((res) => console.log("Success:", res))
+        .catch((err) => console.error(err));
+}

@@ -39,7 +39,7 @@ export default function loginBusiness() {
                 Alert.alert('Error', 'Invalid email or password.');
             }
         } catch (error) {
-            console.error('Login error:', error);
+            console.log('Login error:', error);
             Alert.alert('Error', 'Failed to log in. Please check your credentials.');
         }
     };
@@ -77,6 +77,7 @@ export default function loginBusiness() {
                                 placeholder='Password'
                                 placeholderTextColor='#6b7280'
                                 value={form.password}
+                                autoCapitalize='none'
                                 onChangeText={password => setForm({ ...form, password })}
                                 secureTextEntry={!showPassword}
                             />
