@@ -21,8 +21,6 @@ export default function Home() {
     setLoading(true);
     const stores = await getAllStores();
     setStores(stores);
-    console.log("it's here:")
-    console.log(stores);
     setLoading(false);
     setRefreshing(false);
   }

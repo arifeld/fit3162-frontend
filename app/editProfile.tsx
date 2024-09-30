@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, SafeAreaView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getUserNameFromId, updateUserName} from './api/User'; // Import the API call
+import { Stack } from 'expo-router';
 
 export default function EditProfile() {
   const [userId, setUserId] = useState<number | null>(null); // State to hold userId
@@ -46,6 +47,7 @@ export default function EditProfile() {
 
   return (
     <SafeAreaView style={styles.container}>
+      <Stack.Screen options={{title: "Editing Profile"}} />
       {/* Header */}
       <View style={styles.headerContainer}>
         <Text style={styles.headerText}>Edit Profile</Text>

@@ -138,6 +138,8 @@ export default function StoreDetailScreen() { // Updated component name
     const getBarWidthPercentage = (count: number, total: number) => (count / total) * 100;
 
     const renderHeader = () => {
+
+        console.log(store.image)
         return (
         <View>
             <Stack.Screen
@@ -145,8 +147,8 @@ export default function StoreDetailScreen() { // Updated component name
                     title: store.name
                 }}
             />
-            
-            <Image style={styles.image} source={{uri: store.image}} />
+            { /* For the purposes of the demo, we bypass the cache by doing this */ }
+            <Image style={styles.image} source={{uri: store.image + "?" + Math.random().toString(10)}} /> 
             <Text style={styles.title}>{store.name}</Text>
             <Text style={styles.description}>{store.description}</Text>
             <View style={styles.summaryContainer}>

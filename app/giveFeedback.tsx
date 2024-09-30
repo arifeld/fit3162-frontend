@@ -1,3 +1,4 @@
+import { Stack } from 'expo-router';
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
 
@@ -6,7 +7,7 @@ export default function GiveFeedback() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.headerText}>Give Feedback</Text>
+      <Stack.Screen options={{title: "Give Feedback"}} />
 
       {/* Feedback Input */}
       <Text style={styles.label}>Your Feedback</Text>
