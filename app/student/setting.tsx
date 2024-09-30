@@ -4,7 +4,7 @@ import {
   View, Text, StyleSheet, SafeAreaView, TouchableOpacity, Image, FlatList
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getUserNameFromId } from '../api/User'
+import { getUserNameFromId } from '../api/user'
 import { useIsFocused } from '@react-navigation/native';
 
 interface TabItem {

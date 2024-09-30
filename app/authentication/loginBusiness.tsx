@@ -2,45 +2,48 @@ import React, { useState } from 'react';
 import { useRouter } from 'expo-router';
 import { StyleSheet, View, Text, SafeAreaView, Image, TextInput, TouchableOpacity, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { getDatabase } from '../utils/tempDatabase'; // Import temp database
+import { loginOwner } from '../api/businessLogin'; // Import loginOwner API function
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getOwnerIdByEmail } from '../api/owner';
 
 export default function loginBusiness() {
     const router = useRouter();
 
+    // Form state for email and password
     const [form, setForm] = useState({
         email: '',
         password: ''
     });
 
+    // State to toggle password visibility
     const [showPassword, setShowPassword] = useState(false);
 
-    const handleLogin = () => {
+    // Handle login using the loginOwner API
+    const handleLogin = async () => {
         const { email, password } = form;
-        const { users, businesses } = getDatabase();
-    
-        // Simulate authentication by checking against tempDatabase
-        const user = users.find(u => u.user_email === email && u.user_password === password);
-    
-        if (user) {
-            // Find the business associated with this user (owner)
-            const business = businesses.find(b => b.owner_id === user.user_id);
-    
-            if (business) {
+
+        try {
+            // Call loginOwner API
+            const response = await loginOwner(email, password);
+
+            // Check if login was successful
+            if (response.status === 201) {
+                const { owner_id } = response.data.result;
+
                 // Navigate to BusinessHome and pass the businessId as a route param
                 router.replace({
                     pathname: '/business/businessHome',
-                    params: { businessId: business.business_id },
+                    params: { owner_id: owner_id },
                 });
             } else {
-                Alert.alert('Error', 'No business found for this user.');
+                Alert.alert('Error', 'Invalid email or password.');
             }
-        } else {
-            Alert.alert('Error', 'Invalid email or password.');
+        } catch (error) {
+            console.error('Login error:', error);
+            Alert.alert('Error', 'Failed to log in. Please check your credentials.');
         }
     };
     
-    
-
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <View style={styles.container}>

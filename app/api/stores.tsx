@@ -72,3 +72,10 @@ export const searchStoresByName = async(name: string) => {
     const finalResults = await populatePhotos(data);
     return finalResults;
 }
+
+export const getStoresByBusinessId = async(id: string) => {
+    const rawRequest = await axiosClient.get(`store/business/${id}`);
+    const data = rawRequest.data;
+    const finalResults = await populatePhotos(data);
+    return finalResults;
+}
