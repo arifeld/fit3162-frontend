@@ -4,6 +4,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import Card from '../components/StoreCard';
 import { getFavourites } from '../utils/tempDatabase';
 
+
 export default function Favourites() {
   const [favouriteRestaurants, setFavouriteRestaurants] = useState<{ 
     store_id: number;

@@ -19,4 +19,20 @@ export const addToFavourites = async (  user_id: number, store_id: number) => {
     console.log(request)
 
     return axiosClient.post("favourite", request);
+
 }
+
+export const removeFromFavourites = async (user_id:number, store_id:number) => {
+    const request = {
+        "user_id": user_id,
+        "store_id": store_id,
+    }   
+    
+
+    console.log(request);
+
+    return axiosClient.post("favourites/remove", request);
+
+}
+
+
