@@ -1,49 +1,83 @@
-// app/tabs/profile.tsx
 import { useRouter } from 'expo-router';
-import React from 'react';
-import { 
+import React, { useEffect, useState } from 'react';
+import {
   View, Text, StyleSheet, SafeAreaView, TouchableOpacity, Image, FlatList
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getUserNameFromId } from '../api/User'
+import { useIsFocused } from '@react-navigation/native';
 
-// Define the type for items in the TABS array
 interface TabItem {
   id: string;
   title: string;
+  route: string; // Add route field to specify the navigation path
 }
 
-// List of tab items with their IDs and titles
 const TABS: TabItem[] = [
-  { id: '1', title: 'Security' },
-  { id: '2', title: 'Notification Preferences' },
-  { id: '3', title: 'Give Feedback' },
+  { id: '1', title: 'Edit Profile', route: '/editProfile' },
+  { id: '2', title: 'Notification Preferences', route: '/notificationPreferences' },
+  { id: '3', title: 'Give Feedback', route: '/giveFeedback' },
 ];
 
 export default function Setting() {
+  const isFocused = useIsFocused();
+  const router = useRouter();
+  const [userId, setUserId] = useState<string | null>(null); // Track userId from AsyncStorage
+  const [userUsername, setUserUsername] = useState<string | null>(null); // Track username from database
+
+  // Fetch userId from AsyncStorage when component mounts
+  useEffect(() => {
+    const fetchUserId = async () => {
+      try {
+        const storedUserId = await AsyncStorage.getItem('userId'); // Fetch userId from AsyncStorage
+        if (storedUserId) {
+          setUserId(storedUserId); // Update the state with userId
+          // Fetch username using the stored userId and update state
+          const username = await getUserNameFromId(Number(storedUserId)); // Ensure that it's awaited if it's async
+          console.log('Username:', username);
+          setUserUsername(username); // Set the username in the state
+        }
+      } catch (error) {
+        console.error('Failed to retrieve user ID from AsyncStorage:', error);
+      }
+
+    };
+    if (isFocused) {
+      fetchUserId();
+    }
+  }, [isFocused]); // Empty dependency array to run only once
+
+  // Function to navigate to a specific route when a tab is pressed
+  const handlePress = (route: string) => {
+    router.push(route as any); // Navigate to the given route
+  };
+
   // Render each item in the FlatList
   const renderItem = ({ item }: { item: TabItem }) => (
-    <TouchableOpacity style={styles.tabItem}>
+    <TouchableOpacity style={styles.tabItem} onPress={() => handlePress(item.route)}>
       <Text style={styles.tabTitle}>{item.title}</Text>
     </TouchableOpacity>
   );
 
-  const router = useRouter();
-
   const handleLogout = () => {
-    router.replace('/authentication/loginStudent');
+    // Clear the userId from AsyncStorage when logging out
+    AsyncStorage.removeItem('userId').then(() => {
+      router.replace('/authentication/loginStudent');
+    });
   };
 
   return (
     <SafeAreaView style={styles.container}>
-
       {/* Profile information section */}
       <View style={styles.profileContainer}>
         <Image
-          source={{uri: 'https://static.vecteezy.com/system/resources/previews/019/879/186/original/user-icon-on-transparent-background-free-png.png'}}
+          source={{ uri: 'https://static.vecteezy.com/system/resources/previews/019/879/186/original/user-icon-on-transparent-background-free-png.png' }}
           style={styles.profileImage}
         />
         <View style={styles.profileTextContainer}>
-          <Text style={styles.profileName}>Zhan Hung Fu</Text>
-          <Text style={styles.profileLastLogin}>Last login: Aug 7, 2024 9:58 AM</Text>
+          <Text style={styles.profileName}>
+            {userUsername ? userUsername : 'Loading...'}
+          </Text>
         </View>
       </View>
 
@@ -86,10 +120,7 @@ const styles = StyleSheet.create({
   profileName: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 5
-  },
-  profileLastLogin: {
-    color: 'gray',
+    marginBottom: 5,
   },
   tabList: {
     flexGrow: 0,
@@ -111,7 +142,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   logoutText: {
-      color: 'red',
-      fontSize: 16,
+    color: 'red',
+    fontSize: 16,
   },
 });

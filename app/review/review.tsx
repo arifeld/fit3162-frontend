@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, Switch, StyleSheet, TouchableWithoutFeedback, Keyboard, ScrollView, Alert } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { addReview } from '../utils/tempDatabase'; // Import the addReview function
@@ -18,7 +18,6 @@ export default function WriteReviewScreen() {
   const [images, setImages] = useState<string[]>([]);
   const [imagesBase64, setImagesBase64] = useState<string[]>([])
 
-
   const userId = 1; // Replace with dynamic user ID
 
   const navigation = useNavigation<NavigationProp<any>>();
@@ -29,8 +28,14 @@ export default function WriteReviewScreen() {
   };
 
   const pickImage = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permission Denied', 'Sorry, we need media library permissions to pick images!');
+    }
+
+
     // No permissions request is necessary for launching the image library
-    let result = await ImagePicker.launchCameraAsync({
+    const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       aspect: [4, 3],
@@ -45,6 +50,40 @@ export default function WriteReviewScreen() {
       setImages([...images, ...uris]);  // Append new images to the array
     }
   };
+
+  const takePhoto = async () => {
+    // Request Camera permissions before launching the camera
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permission Denied', 'We need camera permissions to take photos.');
+      return;
+    }
+
+    const result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      // aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      const uris = result.assets.map(asset => asset.uri);  // Extract URIs from assets
+      setImages([...images, ...uris]);  // Append new images to the array
+    }
+  };
+
+  const chooseImageSource = () => {
+    Alert.alert(
+      "Select Image Source",
+      "Choose an option",
+      [
+        {text: "Pick from gallery", onPress: pickImage},
+        {text: "Take a photo", onPress: takePhoto},
+        {text: "Cancel", style: "cancel"},
+      ],
+      {cancelable: true}
+    )
+  }
 
   const handleSubmit = () => {
     if (rating === 0 || !description.trim()) {
@@ -97,7 +136,7 @@ export default function WriteReviewScreen() {
 
           <Text style={styles.label}>Add images (max 3):</Text>
           <View style={styles.imageContainer}>
-            <TouchableOpacity style={styles.addImageButton} onPress={pickImage}>
+            <TouchableOpacity style={styles.addImageButton} onPress={chooseImageSource}>
               <FontAwesome name="plus" size={32} color="#000" />
             </TouchableOpacity>
             {images.map((image, index) => (
