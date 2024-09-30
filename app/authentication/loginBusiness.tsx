@@ -3,6 +3,8 @@ import { useRouter } from 'expo-router';
 import { StyleSheet, View, Text, SafeAreaView, Image, TextInput, TouchableOpacity, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { loginOwner } from '../api/businessLogin'; // Import loginOwner API function
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getOwnerIdByEmail } from '../api/owner';
 
 export default function loginBusiness() {
     const router = useRouter();
@@ -26,12 +28,12 @@ export default function loginBusiness() {
 
             // Check if login was successful
             if (response.status === 201) {
-                const { owner_id, business_id } = response.data.result;
+                const { owner_id } = response.data.result;
 
                 // Navigate to BusinessHome and pass the businessId as a route param
                 router.replace({
                     pathname: '/business/businessHome',
-                    params: { businessId: business_id },
+                    params: { owner_id: owner_id },
                 });
             } else {
                 Alert.alert('Error', 'Invalid email or password.');
