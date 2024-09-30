@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { isFavourite, getStores, getReviewsByStoreId } from '../utils/tempDatabase'; // Updated function import to getStores
 import { router, useLocalSearchParams } from 'expo-router';
 //import { getReviewsByStoreID, getStoreByID } from '../api/stores';
-import { addToFavourites, removeFromFavourites } from '../api/userfavourites';
+import { addToFavourites, checkFavourites, removeFromFavourites } from '../api/userfavourites';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getReviewsByStoreID, getStoreByID } from '../api/reviews';
 
@@ -43,6 +43,7 @@ export default function StoreDetailScreen() { // Updated component name
                 const store = await getStoreByID(id); // Get the array of stores
                 const reviews = await getReviewsByStoreID(id);
                 const userId = await AsyncStorage.getItem('userId');
+                
 
                 const distribution = [0, 0, 0, 0, 0];
                 let recommendationCount = reviews.reduce((acc:any, rec:any) => acc + rec.review_recommended, 0);
@@ -73,8 +74,9 @@ export default function StoreDetailScreen() { // Updated component name
                 navigation.setOptions({ title: mappedStore.name });
 
                 if(userId){
-                    const favStatus = isFavourite(userId.toString(), store.store_id);
-                    setIsFav(favStatus);
+                    const favStatus = await checkFavourites(Number(userId),store.store_id);
+                    console.log(favStatus.isFavorite);
+                    setIsFav(favStatus.isFavorite);
                 }
                                         
                 setUserId(Number(userId));

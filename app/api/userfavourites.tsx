@@ -31,8 +31,19 @@ export const removeFromFavourites = async (user_id:number, store_id:number) => {
 
     console.log(request);
 
-    return axiosClient.post("favourites/remove", request);
+    return axiosClient.post("favourite/remove", request);
 
+}
+
+
+export const checkFavourites = async (user_id:number, store_id:number) => {
+    
+
+    const rawRequest = await axiosClient.get(`favourite/${user_id}/${store_id}`);
+    const data = rawRequest.data;
+    console.log("this is checkfav");
+    console.log(data);
+    return data;
 }
 
 
