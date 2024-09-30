@@ -1,22 +1,33 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router'; // Using expo-router to fetch params
+import { createReviewReply } from '../api/reviewReply';
 
 export default function ReplyPage() {
     const { reviewId, userUsername, reviewDescription } = useLocalSearchParams(); // Retrieve the review details from params
     const [replyText, setReplyText] = useState(''); // Local state for the reply text
 
-    const handleSubmitReply = () => {
+    // hard coding ownerId to make a reply for now
+    const ownerId = 100;
+
+    const handleSubmitReply = async () => {
         if (replyText.trim() === '') {
             Alert.alert('Error', 'Reply text cannot be empty.');
             return;
         }
 
-        // Logic for submitting the reply (e.g., API call or saving locally)
-        Alert.alert('Reply Submitted', `Your reply to review by ${userUsername} has been submitted.`);
-        
-        // Navigate back after submitting
-        router.back();
+        try {
+            const numericReviewId = Array.isArray(reviewId) ? Number(reviewId[0]) : Number(reviewId);
+
+            await createReviewReply(numericReviewId, replyText, ownerId);
+
+            Alert.alert('Reply Submitted', `Your reply to review by ${userUsername} has been submitted.`);
+
+            router.back();
+        }
+        catch (err) {
+            Alert.alert("Error", "Failed to submit reply.");
+        }
     };
 
     return (
