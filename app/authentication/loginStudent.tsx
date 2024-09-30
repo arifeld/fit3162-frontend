@@ -99,6 +99,7 @@ export default function LoginStudent() {
                 placeholder='Password'
                 placeholderTextColor='#6b7280'
                 value={form.password}
+                autoCapitalize='none'
                 onChangeText={password => setForm({ ...form, password })}
                 secureTextEntry={!showPassword} // Toggle password visibility
               />
@@ -144,7 +145,7 @@ export default function LoginStudent() {
 
         {/* Footer section with sign-up link */}
         <View style={styles.footer}>
-          <Text style={styles.footerText}>Don't have an account?</Text>
+          <Text style={styles.footerText}>Don't have an account? </Text>
           <TouchableOpacity onPress={() => router.push('/authentication/signupStudent')}>
             <Text style={styles.signUpText}>Sign Up</Text>
           </TouchableOpacity>
