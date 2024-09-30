@@ -41,7 +41,7 @@ export default function WriteReviewScreen() {
     if (!result.canceled) {
       const uris = result.assets.map(asset => asset.uri);  // Extract URIs from assets
       const base64s = result.assets.map(asset => asset.base64!)
-      setImagesBase64(base64s);
+      setImagesBase64([...imagesBase64, ...base64s]);
       setImages([...images, ...uris]);  // Append new images to the array
     }
   };
@@ -52,7 +52,7 @@ export default function WriteReviewScreen() {
       return;
     }
 
-    createReview(storeId, userId, rating, description, recommend, images)
+    createReview(storeId, userId, rating, description, recommend, imagesBase64)
       .then((res) => {
         Alert.alert('Success', 'Your review has been submitted!', [{
           text: "Ok",

@@ -12,7 +12,7 @@ const ROOT_URL = (process.env.NODE_ENV === "production" ? process.env.API_ENDPOI
 
 
 
-export const createReview = async (storeId: string, userId: number, rating: number, description: string, recommend: boolean, images: string[]) => {
+export const createReview = async (storeId: string, userId: number, rating: number, description: string, recommend: boolean, imagesBase64: string[]) => {
 
     const formData = new FormData();
     
@@ -22,30 +22,15 @@ export const createReview = async (storeId: string, userId: number, rating: numb
         "user_id": userId,
         "store_id": storeId,
         "review_recommended": recommend ? 1 : 0,
-        "files": images.map((image, index) => { return { "uri": image, "name": `${index}.jpeg`, "type": "image/jpeg"} })
+        "files": imagesBase64
     }
 
-    axiosClient.post("review", request).then(async (res) => {
-        const options: FileSystem.FileSystemUploadOptions = {
-            headers: {
-              "Content-Type": "multipart/form-data",
-              Accept: "image/jpeg, image/png",
-            },
-            httpMethod: "POST",
-            uploadType: FileSystem.FileSystemUploadType.MULTIPART,
-            fieldName: "image",
-          };
-          
-          const response = await FileSystem.uploadAsync(
-            `${ROOT_URL}/image/review/${res.data.id}`,
-            images[0] || "",
-            options
-          );
-
-    })
+    //axiosClient.post("review", request)
 
 
-    return axiosClient.post("review", request);
+    axiosClient.post("review", request, {headers: { "Content-Type": "multipart/form-data" }})
+        .then((res) => console.log("Success:", res))
+        .catch((err) => console.error(err));
 }
 
 export const getStoreByID = async(id: string) => {

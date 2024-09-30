@@ -95,6 +95,7 @@ export default function StoreDetailScreen() { // Updated component name
                 ))}
             </View>
             <Text style={styles.comment}>{item.review_description}</Text>
+            {item.images.map((image) => <Image key={image} style={styles.image} source={{uri: image}} />)}
             <View style={styles.reviewFooter}>
                 <Text style={styles.date}>{item.review_date}</Text>
                 {item.review_business_response && (
