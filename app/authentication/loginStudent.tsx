@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { useLayoutEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { loginUser } from '../api/userLogin'; // Ensure getUserIdByEmail is imported
-import { getUserIdByEmail } from '../api/User'; // Import the getUserIdByEmail function
+import { getUserIdByEmail } from '../api/user'; // Import the getUserIdByEmail function
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function LoginStudent() {

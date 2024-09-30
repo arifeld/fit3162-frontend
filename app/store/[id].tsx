@@ -1,17 +1,19 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
-import { NavigationProp, useFocusEffect, useNavigation, useRoute, } from '@react-navigation/native';
+import { NavigationProp, useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { removeFromFavourites, isFavourite, getStores, getReviewsByStoreId } from '../utils/tempDatabase'; // Updated function import to getStores
+import { isFavourite, getStores, getReviewsByStoreId } from '../utils/tempDatabase'; // Updated function import to getStores
 import { Stack, router, useLocalSearchParams } from 'expo-router';
-import { getReviewsByStoreID, getStoreByID } from '../api/stores';
-import { addToFavourites } from '../api/userfavourites';
-import { getUserIdByEmail } from '../api/User';
+//import { getReviewsByStoreID, getStoreByID } from '../api/stores';
+import { addToFavourites, checkFavourites, removeFromFavourites } from '../api/userfavourites';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getReviewsByStoreID, getStoreByID } from '../api/reviews';
+
 
 export default function StoreDetailScreen() { // Updated component name
     const { id } = useLocalSearchParams<{id: string}>(); // Get the store ID from the URL parameters
     const [isFav, setIsFav] = useState(false);
+
     const [store, setStore] = useState<null | {
         name: string;
         description: string;
@@ -22,7 +24,7 @@ export default function StoreDetailScreen() { // Updated component name
         recommendationPercentage: number;
         ratingsDistribution: number[];
     }>(null);
-    const [userId, setUserId] = useState(0);
+    const [userId, setUserId] = useState<Number | null>(null);
 
     const navigation = useNavigation<NavigationProp<any>>();
 
@@ -33,12 +35,15 @@ export default function StoreDetailScreen() { // Updated component name
 
     const [reviews, setReviews] = useState<{ review_id: number; review_date: string; review_rating: number; review_description: string; user_id: number; store_id: number; review_business_response: string; }[]>([]);
 
+
     useFocusEffect(
         useCallback(() => {
 
             async function getData() {
                 const store = await getStoreByID(id); // Get the array of stores
                 const reviews = await getReviewsByStoreID(id);
+                const userId = await AsyncStorage.getItem('userId');
+                
 
                 const distribution = [0, 0, 0, 0, 0];
                 let recommendationCount = reviews.reduce((acc:any, rec:any) => acc + rec.review_recommended, 0);
@@ -60,7 +65,7 @@ export default function StoreDetailScreen() { // Updated component name
                     image: store.image,
                     id: store.store_id,
                     totalReviews: reviews.length,
-                    recommendationPercentage: reviews.length !== 0 ? (recommendationCount / reviews.length) * 100 : 0, //store.recommendationPercentage,
+                    recommendationPercentage: (recommendationCount / reviews.length) * 100 , //store.recommendationPercentage,
                     ratingsDistribution: distribution || [0, 0, 0, 0, 0], //store.ratingsDistribution,
                 };
     
@@ -68,9 +73,15 @@ export default function StoreDetailScreen() { // Updated component name
 
                 navigation.setOptions({ title: mappedStore.name });
 
-                const favStatus = isFavourite(userId.toString(), store.store_id);
-                setIsFav(favStatus);
-    
+                if(userId){
+                    const favStatus = await checkFavourites(Number(userId),store.store_id);
+                    console.log(favStatus.isFavorite);
+                    setIsFav(favStatus.isFavorite);
+                }
+                                        
+                setUserId(Number(userId));
+                
+                
                 // Fetch reviews for the store
                 //const storeReviews = getReviewsByStoreId(store.store_id);
                 setReviews(reviews);
@@ -91,7 +102,6 @@ export default function StoreDetailScreen() { // Updated component name
     }
 
     const renderReview = ({ item }: { item: any }) => (
-        
         <View style={styles.reviewContainer}>
             <Text style={styles.userName}>{item.user_username}</Text>
             <View style={styles.starContainer}>
@@ -100,7 +110,6 @@ export default function StoreDetailScreen() { // Updated component name
                 ))}
             </View>
             <Text style={styles.comment}>{item.review_description}</Text>
-            {item.images.map((image) => <Image key={image} style={styles.image} source={{uri: image}} />)}
             <View style={styles.reviewFooter}>
                 <Text style={styles.date}>{item.review_date}</Text>
                 {item.review_business_response && (
@@ -204,13 +213,14 @@ export default function StoreDetailScreen() { // Updated component name
     );
             }
 
-    const handleToggleFavourite = () => {
+    const handleToggleFavourite = async () => {
+        console.log(userId);
         if (isFav) {
-            removeFromFavourites(userId.toString(), store.id);
-            Alert.alert('Removed from Favourites', `Store ID ${store.id} has been removed from your favourites.`);
+            removeFromFavourites(Number(userId), store.id);
+            Alert.alert('Removed from Favourites', ` ${store.name} has been removed from your favourites.`);
         } else {
-            addToFavourites(Number(userId.toString()), store.id);
-            Alert.alert('Added to Favourites', `Store ID ${store.id} has been added to your favourites.`);
+            addToFavourites(Number(userId), store.id);
+            Alert.alert('Added to Favourites', `${store.name} has been added to your favourites.`);
         }
         setIsFav(!isFav); // Toggle favourite state
     };
@@ -366,3 +376,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
 });
+function setUserUsername(username: any) {
+    throw new Error('Function not implemented.');
+}
+
