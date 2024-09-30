@@ -26,3 +26,17 @@ export const createReviewReply = async (reviewId: number, replyText: string, own
         throw err;
     }
 };
+
+export const getReplyByReviewId = async (reviewId: number) => {
+    try {
+        const response = await axiosClient.get(`reply/${reviewId}`);
+        if (!response || response.status === 404) {
+            return null
+        }
+        return response.data[0].reply_text;
+    }
+    catch (err) {
+        console.error("Error getting reply by review id", err);
+        throw err;
+    }
+}

@@ -8,6 +8,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { addToFavourites, checkFavourites, removeFromFavourites } from '../api/userfavourites';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getReviewsByStoreID, getStoreByID } from '../api/reviews';
+import { getReplyByReviewId } from '../api/reviewReply';
 
 
 export default function StoreDetailScreen() { // Updated component name
@@ -35,6 +36,8 @@ export default function StoreDetailScreen() { // Updated component name
 
     const [reviews, setReviews] = useState<{ review_id: number; review_date: string; review_rating: number; review_description: string; user_id: number; store_id: number; review_business_response: string; }[]>([]);
 
+    const [replies, setReplies] = useState<{ [key: number]: string | null }>({});
+
 
     useFocusEffect(
         useCallback(() => {
@@ -43,13 +46,17 @@ export default function StoreDetailScreen() { // Updated component name
                 const store = await getStoreByID(id); // Get the array of stores
                 const reviews = await getReviewsByStoreID(id);
                 const userId = await AsyncStorage.getItem('userId');
-                
+
+                const repliesMap: { [key: number]: string | null } = {}; // Initialize a map to store replies
 
                 const distribution = [0, 0, 0, 0, 0];
                 let recommendationCount = reviews.reduce((acc:any, rec:any) => acc + rec.review_recommended, 0);
 
                 
                 for (const review of reviews) {
+                    const reply = await getReplyByReviewId(review.review_id);
+                    repliesMap[review.review_id] = reply; // Store reply in map
+
                     if (![1, 2, 3, 4, 5].includes(review.review_rating)) {
                         console.error("Invalid review value:", review.review_rating);
                     }
@@ -57,6 +64,8 @@ export default function StoreDetailScreen() { // Updated component name
                         distribution[review.review_rating-1] += 1;
                     }
                 }
+
+                setReplies(repliesMap);
 
                 const mappedStore = {
                     name: store.store_name,
@@ -116,6 +125,9 @@ export default function StoreDetailScreen() { // Updated component name
                     <Text style={styles.recommended}>Business Response: {item.review_business_response}</Text>
                 )}
             </View>
+            {replies[item.review_id] && (
+                    <Text style={styles.replyText}>Owner's reply: {replies[item.review_id]}</Text>
+            )}
     
             {/* Add the Reply button */}
             {previousRouteName === 'business' && (
@@ -367,6 +379,11 @@ const styles = StyleSheet.create({
         color: '#007BFF',
         textAlign: 'center',
         fontWeight: 'bold',
+    },
+    replyText: {
+        fontSize: 14,
+        color: 'blue',
+        marginTop: 4,
     },
 });
 function setUserUsername(username: any) {
