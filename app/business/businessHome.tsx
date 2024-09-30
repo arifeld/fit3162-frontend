@@ -21,40 +21,50 @@ type Store = {
   };
   
 
-export default function BusinessHome() {
-    const {owner_id }= useLocalSearchParams();
-    const businessId = getBusinessByOwnerID(String(owner_id));
-    
-    // Ensure businessId is always a string
-    const normalizedBusinessId = Array.isArray(businessId) ? businessId[0] : businessId;
-    
-    const [stores, setStores] = useState<Store[]>([]); // Correctly typed state
+  export default function BusinessHome() {
+    const { owner_id } = useLocalSearchParams(); // Get owner_id from the route params
+    const [businessId, setBusinessId] = useState<string | null>(null);  // State to store businessId
+    const [stores, setStores] = useState<Store[]>([]); // Correctly typed state for stores
     const [refreshing, setRefreshing] = useState(false);
 
+    // Fetch business ID by owner ID when the component mounts or owner_id changes
     useEffect(() => {
-        if (normalizedBusinessId) {
-            loadStores(normalizedBusinessId);
+        const fetchBusinessId = async () => {
+            try {
+                const fetchedBusinessId = await getBusinessByOwnerID(String(owner_id));
+                setBusinessId(fetchedBusinessId);  // Store the fetched businessId in state
+            } catch (error) {
+                console.error('Failed to fetch business ID:', error);
+            }
+        };
+
+        if (owner_id) {
+            fetchBusinessId();  // Trigger fetching the business ID
         }
-    }, [normalizedBusinessId]);
+    }, [owner_id]);  // This useEffect will only run when owner_id changes
+
+    // Fetch stores when the businessId is available
+    useEffect(() => {
+        if (businessId) {
+            loadStores(businessId);  // Load stores after businessId is fetched
+        }
+    }, [businessId]);  // This useEffect will run when businessId changes
 
     const loadStores = async (id: string) => {
         try {
-            // Await the API call and parse the JSON response
             const response = await getStoresByBusinessId(id);  // Assume it returns a JSON array
             const stores: Store[] = response as Store[];  // Cast the response to the Store[] type
-    
-            // Now you can safely set the parsed data into your state
-            setStores(stores);
+            setStores(stores);  // Set the stores in state
         } catch (error) {
             console.error('Failed to load stores:', error);
         }
     };
-    
+
     const onRefresh = () => {
         setRefreshing(true);
         setTimeout(() => {
-            if (normalizedBusinessId) {
-                loadStores(normalizedBusinessId);
+            if (businessId) {
+                loadStores(businessId);
             }
             setRefreshing(false);
         }, 2000);
@@ -68,7 +78,15 @@ export default function BusinessHome() {
                 <FlatList
                     data={stores}
                     keyExtractor={(store) => store.store_id.toString()}
-                    renderItem={({ item }) => <StoreCard info={item} />}
+                    renderItem={({ item }) => (
+                        <StoreCard
+                            info={{
+                                ...item,  // Spread existing store properties
+                                rating:  0,  // Provide default value for rating
+                                image: 'default-image.jpg'  // Provide default value for image
+                            }}
+                        />
+                    )}
                     contentContainerStyle={styles.container}
                     refreshControl={
                         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -77,6 +95,7 @@ export default function BusinessHome() {
             )}
         </View>
     );
+    
 }
 
 const styles = StyleSheet.create({
