@@ -31,28 +31,30 @@ export default function StoreDetailScreen() { // Updated component name
 
     const previousRouteName = navigationState?.routes?.[navigationState.index - 1]?.name;
 
-    console.log('Previous Route Name:', previousRouteName);
-
     const [reviews, setReviews] = useState<{ review_id: number; review_date: string; review_rating: number; review_description: string; user_id: number; store_id: number; review_business_response: string; }[]>([]);
     
-    // Fetch user ID by email on component mount
-     useEffect(() => {
-        
+    useEffect(() => {
         const fetchUserId = async () => {
-            
-            if (userEmail) {
-                try {
-                    const id = await getUserIdByEmail(userEmail); // Await the response
+            try {
+                console.log('Attempting to retrieve userEmail from AsyncStorage...');
+                const userEmail = await AsyncStorage.getItem('userEmail');
+                console.log('Retrieved userEmail:', userEmail); // Add this log
+    
+                if (userEmail) {
+                    const id = await getUserIdByEmail(userEmail); // Await the response from getUserIdByEmail
                     setUserId(id); // Set the user ID in state
-                    console.log(id);
-                } catch (error) {
-                    console.error('Failed to fetch user ID:', error);
+                    console.log('Fetched User ID:', id); // Log the user ID
+                } else {
+                    console.warn('No user email found in AsyncStorage');
                 }
+            } catch (error) {
+                console.error('Failed to fetch user ID:', error);
             }
         };
+    
         fetchUserId();
-    }, [userEmail]);
-
+    }, []); // No dependencies since it's fetched on mount
+    
 
     useFocusEffect(
         useCallback(() => {
