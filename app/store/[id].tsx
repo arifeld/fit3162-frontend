@@ -1,9 +1,9 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
-import { NavigationProp, useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
+import { NavigationProp, useFocusEffect, useNavigation, useRoute, } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {  removeFromFavourites, isFavourite, getStores, getReviewsByStoreId } from '../utils/tempDatabase'; // Updated function import to getStores
-import { router, useLocalSearchParams } from 'expo-router';
+import { removeFromFavourites, isFavourite, getStores, getReviewsByStoreId } from '../utils/tempDatabase'; // Updated function import to getStores
+import { Stack, router, useLocalSearchParams } from 'expo-router';
 import { getReviewsByStoreID, getStoreByID } from '../api/stores';
 import { addToFavourites } from '../api/userfavourites';
 import { getUserIdByEmail } from '../api/User';
@@ -60,7 +60,7 @@ export default function StoreDetailScreen() { // Updated component name
                     image: store.image,
                     id: store.store_id,
                     totalReviews: reviews.length,
-                    recommendationPercentage: (recommendationCount / reviews.length) * 100 , //store.recommendationPercentage,
+                    recommendationPercentage: reviews.length !== 0 ? (recommendationCount / reviews.length) * 100 : 0, //store.recommendationPercentage,
                     ratingsDistribution: distribution || [0, 0, 0, 0, 0], //store.ratingsDistribution,
                 };
     
@@ -91,6 +91,7 @@ export default function StoreDetailScreen() { // Updated component name
     }
 
     const renderReview = ({ item }: { item: any }) => (
+        
         <View style={styles.reviewContainer}>
             <Text style={styles.userName}>{item.user_username}</Text>
             <View style={styles.starContainer}>
@@ -99,6 +100,7 @@ export default function StoreDetailScreen() { // Updated component name
                 ))}
             </View>
             <Text style={styles.comment}>{item.review_description}</Text>
+            {item.images.map((image) => <Image key={image} style={styles.image} source={{uri: image}} />)}
             <View style={styles.reviewFooter}>
                 <Text style={styles.date}>{item.review_date}</Text>
                 {item.review_business_response && (
@@ -138,6 +140,11 @@ export default function StoreDetailScreen() { // Updated component name
     const renderHeader = () => {
         return (
         <View>
+            <Stack.Screen
+                options={{
+                    title: store.name
+                }}
+            />
             
             <Image style={styles.image} source={{uri: store.image}} />
             <Text style={styles.title}>{store.name}</Text>

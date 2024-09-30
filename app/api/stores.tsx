@@ -26,8 +26,13 @@ export const getStoreByID = async(id: string) => {
 
 export const getReviewsByStoreID = async(id: string) => {
     const rawRequest = await axiosClient.get(`review/${id}`);
-    return rawRequest.data;
+    const data = rawRequest.data;
+    const finalResults = await populateReviewPhotos(data);
+    console.log(finalResults);
+    return finalResults;
 }
+
+
 
 export const populatePhotos = async(data: object[]) => {
     const output = [];
@@ -39,4 +44,31 @@ export const populatePhotos = async(data: object[]) => {
     console.log(output);
 
     return output;
+}
+
+export const populateReviewPhotos = async(data: object[]) => {
+    const output = [];
+
+    for (let review of data) {
+        const images = [];
+
+        for (const file of review["images"]) {
+            if (file !== null) {
+                images.push(`${ROOT_URL}/images/review/${file}`);
+            }
+            review["images"] = images;
+        }
+
+        output.push(review);
+    }
+
+    return output;
+}
+
+
+export const searchStoresByName = async(name: string) => {
+    const rawRequest = await axiosClient.get(`store/name/${name}`);
+    const data = rawRequest.data;
+    const finalResults = await populatePhotos(data);
+    return finalResults;
 }

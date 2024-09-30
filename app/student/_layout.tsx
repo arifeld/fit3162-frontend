@@ -3,6 +3,7 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Tabs } from 'expo-router';
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/app/components/useColorScheme';
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof FontAwesome>['name'];
@@ -13,17 +14,18 @@ function TabBarIcon(props: {
 
 export default function StudentTabLayout() {
   const colorScheme = useColorScheme();
+
   return (
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
+        headerShown: true,
       }}
     >
       <Tabs.Screen
         name="home"
         options={{
-          title: 'Home',
+          title: 'bruh',
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
         }}
       />

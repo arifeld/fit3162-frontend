@@ -5,6 +5,7 @@ import { addReview } from '../utils/tempDatabase'; // Import the addReview funct
 import { useLocalSearchParams } from 'expo-router';
 import { createReview } from '../api/reviews';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
+
 import * as ImagePicker from 'expo-image-picker';
 
 export default function WriteReviewScreen() {
@@ -15,6 +16,7 @@ export default function WriteReviewScreen() {
   const [anonymous, setAnonymous] = useState(false);
   const [recommend, setRecommend] = useState(false);
   const [images, setImages] = useState<string[]>([]);
+  const [imagesBase64, setImagesBase64] = useState<string[]>([])
 
   const userId = 1; // Replace with dynamic user ID
 
@@ -38,10 +40,13 @@ export default function WriteReviewScreen() {
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
+      base64: true
     });
 
     if (!result.canceled) {
       const uris = result.assets.map(asset => asset.uri);  // Extract URIs from assets
+      const base64s = result.assets.map(asset => asset.base64!)
+      setImagesBase64([...imagesBase64, ...base64s]);
       setImages([...images, ...uris]);  // Append new images to the array
     }
   };
@@ -86,12 +91,19 @@ export default function WriteReviewScreen() {
       return;
     }
 
-    createReview(storeId, userId, rating, description, recommend)
+    createReview(storeId, userId, rating, description, recommend, imagesBase64)
       .then((res) => {
         Alert.alert('Success', 'Your review has been submitted!', [{
           text: "Ok",
           onPress: () => navigation.goBack()
         }])
+      })
+      .catch((err) => {
+        Alert.alert("Failure", "Something went wrong. Please try again.", [{
+          text: "Ok",
+          onPress: () => navigation.goBack()
+        }]
+        )
       }); // Add the review to the database
     // Optionally reset the form or navigate away
   };
