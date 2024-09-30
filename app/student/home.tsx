@@ -6,6 +6,7 @@ import { useLayoutEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 
 import { getAllStores } from '../api/stores';
+import { Stack, Tabs } from 'expo-router';
 
 export default function Home() {
 
@@ -61,6 +62,7 @@ export default function Home() {
 
   return (
     <View style={styles.outerContainer}>
+      <Stack.Screen options={{title: "Home", headerShown: true}} />
       {
         loading && !refreshing ? <ActivityIndicator /> : storeInfo
       }
@@ -72,6 +74,7 @@ const styles = StyleSheet.create({
   outerContainer: {
     flex: 1,
     backgroundColor: 'white',
+    
   },
   container: {
     marginVertical: 10,

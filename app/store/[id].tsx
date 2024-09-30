@@ -1,9 +1,9 @@
 import React, { useState, useCallback } from 'react';
 import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
-import { NavigationProp, useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
+import { NavigationProp, useFocusEffect, useNavigation, useRoute, } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { addToFavourites, removeFromFavourites, isFavourite, getStores, getReviewsByStoreId } from '../utils/tempDatabase'; // Updated function import to getStores
-import { router, useLocalSearchParams } from 'expo-router';
+import { Stack, router, useLocalSearchParams } from 'expo-router';
 import { getReviewsByStoreID, getStoreByID } from '../api/stores';
 
 export default function StoreDetailScreen() { // Updated component name
@@ -87,6 +87,7 @@ export default function StoreDetailScreen() { // Updated component name
     }
 
     const renderReview = ({ item }: { item: any }) => (
+        
         <View style={styles.reviewContainer}>
             <Text style={styles.userName}>{item.user_username}</Text>
             <View style={styles.starContainer}>
@@ -135,6 +136,11 @@ export default function StoreDetailScreen() { // Updated component name
     const renderHeader = () => {
         return (
         <View>
+            <Stack.Screen
+                options={{
+                    title: store.name
+                }}
+            />
             
             <Image style={styles.image} source={{uri: store.image}} />
             <Text style={styles.title}>{store.name}</Text>

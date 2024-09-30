@@ -3,6 +3,7 @@ import { StyleSheet, TextInput, View, Text, Image, FlatList, TouchableWithoutFee
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Card from '../components/StoreCard';
 import { searchStoresByName } from '../api/stores';
+import { Stack } from 'expo-router';
 
 export default function Search() {
   const [isLoading, setIsLoading] = useState(true);
@@ -30,6 +31,7 @@ export default function Search() {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <View style={styles.container}>
+  
         {/* Non-scrollable content: Search Bar */}
         <View style={styles.searchBarContainer}>
           <Icon name="search" size={20} color="#777" style={styles.searchIcon} />
