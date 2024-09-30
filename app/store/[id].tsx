@@ -210,10 +210,10 @@ export default function StoreDetailScreen() { // Updated component name
         console.log(userId);
         if (isFav) {
             removeFromFavourites(Number(userId), store.id);
-            Alert.alert('Removed from Favourites', `Store ID ${store.id} has been removed from your favourites.`);
+            Alert.alert('Removed from Favourites', ` ${store.name} has been removed from your favourites.`);
         } else {
             addToFavourites(Number(userId), store.id);
-            Alert.alert('Added to Favourites', `Store ID ${store.id} has been added to your favourites.`);
+            Alert.alert('Added to Favourites', `${store.name} has been added to your favourites.`);
         }
         setIsFav(!isFav); // Toggle favourite state
     };
