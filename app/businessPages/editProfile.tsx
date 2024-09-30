@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet, SafeAreaView } from 'react-native';
-import { useRouter } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 
 export default function EditBusinessProfile() {
   const [businessName, setBusinessName] = useState('Boost Juice'); // Default business name
@@ -14,6 +14,8 @@ export default function EditBusinessProfile() {
 
   return (
     <SafeAreaView style={styles.container}>
+    <Stack.Screen options={{title: "Editing Business Profile", headerShown: true}} />
+
       {/* Page Title */}
       <Text style={styles.headerText}>Edit Business Profile</Text>
 

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, SafeAreaView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Stack } from 'expo-router';
-import { getUserIdByEmail, getUserNameFromId } from './api/user';
+import { Stack, router } from 'expo-router';
+import { updateUserName, getUserNameFromId } from './api/user';
 
 export default function EditProfile() {
   const [userId, setUserId] = useState<number | null>(null); // State to hold userId
@@ -41,8 +41,15 @@ export default function EditProfile() {
     }
 
     // Here would call an API to update the user's username
-    updateUserName(userId!, username); // Call the API to update the username
-    Alert.alert('Profile Updated', `Username has been changed to: ${username}`);
+    updateUserName(userId!, username).then(() => {
+      // Call the API to update the username
+      Alert.alert('Profile Updated', `Username has been changed to: ${username}`);
+      router.back()
+    })
+    .catch((err) => {
+      Alert.alert('Error', `Something went wrong. Please try again.`);
+      router.back();
+    }); 
   };
 
   return (

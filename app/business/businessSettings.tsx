@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
-import { useRouter, useLocalSearchParams } from 'expo-router';
+import { useRouter, useLocalSearchParams, Stack } from 'expo-router';
 
 export default function BusinessSettings() {
   const { userType } = useLocalSearchParams(); // Retrieve the user type and lastLogin parameters
@@ -12,13 +12,14 @@ export default function BusinessSettings() {
 
   return (
     <SafeAreaView style={styles.container}>
+      <Stack.Screen options={{title: "Business Settings", headerShown: true}} />
+
       <ScrollView>
         {/* Header with Logo and Business Name */}
         <View style={styles.header}>
-          <View style={styles.logo}>
-            {/* Replace this with the actual logo image if necessary */}
+          {/* <View style={styles.logo}>
             <Text style={styles.logoText}>Logo</Text>
-          </View>
+          </View> */}
           <View style={styles.headerText}>
             <Text style={styles.title}>Boost Juice</Text>
           </View>
@@ -27,12 +28,12 @@ export default function BusinessSettings() {
         {/* Settings options */}
         <View style={styles.settingsContainer}>
           {/* Edit Profile */}
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={styles.settingItem}
             onPress={() => router.push('/businessPages/editProfile')}
           >
             <Text style={styles.settingText}>Edit Profile</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
           {/* Notification Preferences */}
           <TouchableOpacity
@@ -51,12 +52,12 @@ export default function BusinessSettings() {
           </TouchableOpacity>
 
           {/* Manage Shops */}
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={styles.settingItem}
             onPress={() => router.push('/businessPages/manageStorePage')}
           >
             <Text style={styles.settingText}>Manage Shops</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
 
         {/* Log Out button */}

@@ -17,8 +17,6 @@ export const addToFavourites = async (  user_id: number, store_id: number) => {
         "store_id": store_id,
     }
 
-    console.log(request)
-
     return axiosClient.post("favourite", request);
 
 }
@@ -30,8 +28,6 @@ export const removeFromFavourites = async (user_id:number, store_id:number) => {
     }   
     
 
-    console.log(request);
-
     return axiosClient.post("favourite/remove", request);
 
 }
@@ -41,7 +37,6 @@ export const checkFavourites = async (user_id:number, store_id:number) => {
     
     const rawRequest = await axiosClient.get(`favourite/${user_id}/${store_id}`);
     const data = rawRequest.data;
-    console.log(data);
     return data;
 }
 
@@ -49,7 +44,6 @@ export const getFavouriteStores = async (user_id:number) => {
     const rawRequest = await axiosClient.get(`favourite/${user_id}`);
     const data = rawRequest.data;
     const finalResults = await populatePhotos(data);
-    console.log(finalResults);
     return finalResults;
 }
 

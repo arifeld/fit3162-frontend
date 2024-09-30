@@ -34,7 +34,6 @@ export default function Setting() {
           setUserId(storedUserId); // Update the state with userId
           // Fetch username using the stored userId and update state
           const username = await getUserNameFromId(Number(storedUserId)); // Ensure that it's awaited if it's async
-          console.log('Username:', username);
           setUserUsername(username); // Set the username in the state
         }
       } catch (error) {

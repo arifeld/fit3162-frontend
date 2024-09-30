@@ -69,7 +69,7 @@ export default function BusinessHome() {
 
     return (
         <View style={styles.outerContainer}>
-            <Stack.Screen options={{title: "Business Home"}} />
+            <Stack.Screen options={{title: "Business Home", headerShown: true}} />
             {stores.length === 0 ? (
                 <Text style={styles.emptyMessage}>No stores available</Text>
             ) : (

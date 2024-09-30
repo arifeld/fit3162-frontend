@@ -28,8 +28,6 @@ export default function Favourites() {
     setFavouriteRestaurants(favstores);
     setRefreshing(false);
     setLoading(false);
-    console.log("favourite it's here:")
-    console.log(favstores);
   }
 
   useFocusEffect(

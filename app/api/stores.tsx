@@ -36,14 +36,23 @@ export const getReviewsByStoreID = async(id: string) => {
 
 export const populatePhotos = async(data: object[]) => {
     const output = [];
-    
-    for (let store of data) {
-        store["image"] = `${ROOT_URL}/images/stores/${store["store_file_name"]}`;
-        output.push(store); 
-    }
-    console.log(output);
 
-    return output;
+    try {
+        if (data.length == 0) { return data; }
+    
+        for (let store of data) {
+            store["image"] = `${ROOT_URL}/images/stores/${store["store_file_name"]}`;
+            output.push(store); 
+        }
+        console.log(output);
+    
+        return output;
+    }
+    catch (err) {
+        console.log(err);
+    }
+
+   
 }
 
 export const populateReviewPhotos = (data: object[]) => {

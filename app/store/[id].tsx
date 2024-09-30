@@ -86,8 +86,6 @@ export default function StoreDetailScreen() { // Updated component name
                 //const storeReviews = getReviewsByStoreId(store.store_id);
                 setReviews(reviews);
 
-                console.log(reviews);
-
             }
 
             getData();
@@ -104,8 +102,6 @@ export default function StoreDetailScreen() { // Updated component name
     }
 
     const renderReview = ({ item }: { item: any }) => {
-        console.log("ITEM");
-        console.log(item);
         
         return (
         <View style={styles.reviewContainer}>
@@ -156,8 +152,6 @@ export default function StoreDetailScreen() { // Updated component name
     const getBarWidthPercentage = (count: number, total: number) => (count / total) * 100;
 
     const renderHeader = () => {
-
-        console.log(store.image)
         return (
         <View>
             <Stack.Screen
