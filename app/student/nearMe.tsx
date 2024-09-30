@@ -20,6 +20,12 @@ export default function NearMe() {
 
 
   useEffect(() => {
+    async function getLocationPermissions() {
+      await Location.requestForegroundPermissionsAsync();
+    }
+
+    getLocationPermissions();
+
     async function getData() {
       setIsLoading(true);
       const data = await getAllStores();
@@ -29,6 +35,8 @@ export default function NearMe() {
 
     getData();
   }, []);
+
+
 
   const openNavigation = (latitude: number, longitude: number) => {
     const url = `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}&travelmode=driving&dir_action=navigate`;
