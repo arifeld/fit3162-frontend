@@ -17,7 +17,17 @@ export const getUserIdByEmail = async (email: string) => {
 
 export const getUserNameFromId = async (id: number) => {
     const rawRequest = await axiosClient.get(`user/name/${id}`);
+
+    // Correctly extract the data from the response object
+    const data = rawRequest.data.result;  // Access the 'result' field directly
+    console.log("data", data);  // This should now log the user_id correctly (e.g., 2)
     
+    return data;
+}
+
+export const updateUserName = async (user_id: number, user_username: string) => {
+    const rawRequest = await axiosClient.put(`user/${user_id}`, { user_username });
+
     // Correctly extract the data from the response object
     const data = rawRequest.data.result;  // Access the 'result' field directly
     console.log("data", data);  // This should now log the user_id correctly (e.g., 2)

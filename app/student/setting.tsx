@@ -1,10 +1,11 @@
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { 
+import {
   View, Text, StyleSheet, SafeAreaView, TouchableOpacity, Image, FlatList
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getUserNameFromId } from '../api/User'
+import { useIsFocused } from '@react-navigation/native';
 
 interface TabItem {
   id: string;
@@ -19,6 +20,7 @@ const TABS: TabItem[] = [
 ];
 
 export default function Setting() {
+  const isFocused = useIsFocused();
   const router = useRouter();
   const [userId, setUserId] = useState<string | null>(null); // Track userId from AsyncStorage
   const [userUsername, setUserUsername] = useState<string | null>(null); // Track username from database
@@ -38,10 +40,12 @@ export default function Setting() {
       } catch (error) {
         console.error('Failed to retrieve user ID from AsyncStorage:', error);
       }
-    };
 
-    fetchUserId();
-  }, []); // Empty dependency array to run only once
+    };
+    if (isFocused) {
+      fetchUserId();
+    }
+  }, [isFocused]); // Empty dependency array to run only once
 
   // Function to navigate to a specific route when a tab is pressed
   const handlePress = (route: string) => {
@@ -67,7 +71,7 @@ export default function Setting() {
       {/* Profile information section */}
       <View style={styles.profileContainer}>
         <Image
-          source={{uri: 'https://static.vecteezy.com/system/resources/previews/019/879/186/original/user-icon-on-transparent-background-free-png.png'}}
+          source={{ uri: 'https://static.vecteezy.com/system/resources/previews/019/879/186/original/user-icon-on-transparent-background-free-png.png' }}
           style={styles.profileImage}
         />
         <View style={styles.profileTextContainer}>
