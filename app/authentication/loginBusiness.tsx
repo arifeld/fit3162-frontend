@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useRouter } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import { StyleSheet, View, Text, SafeAreaView, Image, TextInput, TouchableOpacity, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { getDatabase } from '../utils/tempDatabase'; // Import temp database
@@ -44,6 +44,7 @@ export default function loginBusiness() {
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <View style={styles.container}>
+                <Stack.Screen options={{title: "Business Login"}}/>
                 <View style={styles.header}>
                     <Image
                         source={require('../assets/images/monash-logo.png')}

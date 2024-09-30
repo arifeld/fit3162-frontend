@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useRouter } from 'expo-router';
+import { Link, Stack, useRouter } from 'expo-router';
 import { StyleSheet, View, Text, SafeAreaView, Image, TextInput, TouchableOpacity, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useLayoutEffect } from 'react';
@@ -31,6 +31,11 @@ export default function LoginStudent() {
     console.log("Passed to handleLogin");
     console.log(form);
 
+    if (form.email.trim().length == 0 || form.password.trim().length == 0) {
+        Alert.alert("Error", "Email and password cannot be blank. Please try again.");
+        return;
+    }
+
     try {
       // Call the loginUser API to validate the user's credentials
       const response = await loginUser(form.email, form.password);
@@ -58,8 +63,8 @@ export default function LoginStudent() {
         Alert.alert("Error", "Failed to login. Check credentials.");
       }
     } catch (error) {
-      console.error("Error during login:", error);
-      Alert.alert("Error", "Incorrect Login Credentials, please check your password");
+      console.log("Failed to login.:", error);
+      Alert.alert("Error", "Failed to login. Please check your credentials and try again.");
     }
   };
 

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Text, SafeAreaView, Image, TextInput, TouchableOpacity, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { createUser } from '../api/userLogin';
+import { Stack, Tabs } from 'expo-router';
 
 export default function signupStudent() {
 
@@ -37,7 +38,9 @@ export default function signupStudent() {
 
     return ( 
     <SafeAreaView style={{flex: 1}}>
+        <Stack.Screen options={{title: "Register", headerTitle: "Register", headerShown: true}}/>
         <View style={styles.container}>
+        
              {/* Header section with logo and title */}
             <View style={styles.header}>
                 <Image 
