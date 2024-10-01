@@ -32,7 +32,7 @@ const StoreCard: React.FC<StoreCardProps> = ({ info }) => {
             </Text>
           </View>
           <View style={styles.starContainer}>
-            <Text style={styles.rating}>{info.rating?.toFixed(1) || "N/A"}</Text>
+            <Text style={styles.rating}>{info.rating?.toFixed(1) || "0.0"}</Text>
             <Icon style={styles.star} name="star" size={20} color="#FFD43B" />
           </View>
         </View>
