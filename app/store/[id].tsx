@@ -104,7 +104,7 @@ export default function StoreDetailScreen() { // Updated component name
         );
     }
 
-    if (!store) {
+    if (!store || isLoading) {
         return (
             <View style={styles.container}>
                 <Stack.Screen options={{title: ""}} />
