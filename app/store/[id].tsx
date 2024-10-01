@@ -35,11 +35,13 @@ export default function StoreDetailScreen() { // Updated component name
 
     const [reviews, setReviews] = useState<{ review_id: number; review_date: string; review_rating: number; review_description: string; user_id: number; store_id: number; review_business_response: string; }[]>([]);
 
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useFocusEffect(
         useCallback(() => {
 
             async function getData() {
+                setIsLoading(true);
                 const store = await getStoreByID(id); // Get the array of stores
                 const reviews = await getReviewsByStoreID(id);
                 const userId = await AsyncStorage.getItem('userId');
@@ -86,6 +88,7 @@ export default function StoreDetailScreen() { // Updated component name
                 //const storeReviews = getReviewsByStoreId(store.store_id);
                 setReviews(reviews);
 
+                setIsLoading(false);
             }
 
             getData();
@@ -93,7 +96,7 @@ export default function StoreDetailScreen() { // Updated component name
     );
     
 
-    if (!store) {
+    if (!store && !loading) {
         return (
             <View style={styles.container}>
                 <Text style={styles.title}>Store not found</Text>
@@ -160,7 +163,8 @@ export default function StoreDetailScreen() { // Updated component name
                 }}
             />
             { /* For the purposes of the demo, we bypass the cache by doing this */ }
-            <Image style={styles.image} source={{uri: store.image + "?" + Math.random().toString(10)}} /> 
+            {/* <Image style={styles.image} source={{uri: store.image + "?" + Math.random().toString(10)}} />  */}
+            <Image style={styles.image} source={{uri: store.image}} />
             <Text style={styles.title}>{store.name}</Text>
             <Text style={styles.description}>{store.description}</Text>
             <View style={styles.summaryContainer}>

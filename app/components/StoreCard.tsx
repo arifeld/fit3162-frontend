@@ -23,7 +23,8 @@ const StoreCard: React.FC<StoreCardProps> = ({ info }) => {
     >
       <TouchableOpacity style={styles.cardContainer}>
         { /* For demos sake, bypass the cache so images are correct */ }
-        <Image style={styles.imageStyle} source={{uri: info.image + "?" + Math.random().toString(10)}} />
+        {/* <Image style={styles.imageStyle} source={{uri: info.image + "?" + Math.random().toString(10)}} /> */}
+        <Image style={styles.imageStyle} source={{uri: info.image}} />
         <View style={styles.descriptionContainer}>
           <View style={styles.textContainer}>
             <Text style={styles.title}>{info.store_name}</Text>
