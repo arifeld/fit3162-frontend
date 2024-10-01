@@ -18,8 +18,6 @@ export default function signupStudent() {
 
     // Function to handle user signup
     const handleSignUp = async () => {
-        console.log("passed to handleSignup");
-        console.log(form);
         try {
             // Call the createUser API
             const response = await createUser(form.email, form.password, form.name);
@@ -86,6 +84,7 @@ export default function signupStudent() {
                         <TextInput
                             style={styles.inputControlPassword}
                             placeholder='Password'
+                            autoCapitalize='none'
                             placeholderTextColor='#6b7280'
                             value={form.password}
                             onChangeText={password => setForm({...form, password})}
