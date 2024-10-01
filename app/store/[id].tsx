@@ -96,12 +96,20 @@ export default function StoreDetailScreen() { // Updated component name
     );
     
 
-    if (!store && !loading) {
+    if (!store && !isLoading) {
         return (
             <View style={styles.container}>
                 <Text style={styles.title}>Store not found</Text>
             </View>
         );
+    }
+
+    if (!store) {
+        return (
+            <View style={styles.container}>
+                <Stack.Screen options={{title: ""}} />
+            </View>
+        )
     }
 
     const renderReview = ({ item }: { item: any }) => {
